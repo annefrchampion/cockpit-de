@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cockpit Allemagne</title>
+<meta name="description" content="Recherche d emploi Anne et Joffrey, quatre bassins allemands. Offres, tri, candidatures, taches.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app">
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">AJ</div>
+    <div style="min-width:0">
+      <h1>Cockpit Allemagne</h1>
+      <div class="scan" id="scan-meta">chargement des offres</div>
+    </div>
+  </div>
+  <div class="moi">
+    <span class="moi-lbl">Je suis</span>
+    <div class="seg seg-moi" id="seg-moi">
+      <button data-moi="Anne" aria-pressed="false">Anne</button>
+      <button data-moi="Joffrey" aria-pressed="false">Joffrey</button>
+    </div>
+    <button class="btn-ico" id="btn-theme" title="Clair / sombre" aria-label="Changer le theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-1-.1-1.4A5.5 5.5 0 0 1 12 3z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="bandeau" id="bandeau" hidden></div>
+
+<nav class="nav" id="nav">
+  <button data-vue="aujourdhui" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    Aujourd hui<span class="pastille" id="n-urgent" hidden>0</span>
+  </button>
+  <button data-vue="trier" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+    Trier<span class="pastille bleue" id="n-trier" hidden>0</span>
+  </button>
+  <button data-vue="taches" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Taches<span class="n" id="n-taches">0</span>
+  </button>
+  <button data-vue="offres" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>
+    Offres
+  </button>
+  <button data-vue="commandes" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg>
+    Commandes
+  </button>
+</nav>
+
+<main>
+  <section id="vue-aujourdhui" class="vue"><div class="skeleton"></div></section>
+
+  <section id="vue-trier" class="vue" hidden></section>
+
+  <section id="vue-taches" class="vue" hidden></section>
+
+  <section id="vue-offres" class="vue" hidden>
+    <div class="rail">
+      <div class="rail-head"><h2>Ou en est le pipeline</h2><span class="tot" id="rail-total">0 offre</span></div>
+      <div class="rail-bar">
+        <div class="rail-seg" data-c="tri" id="rail-tri"></div>
+        <div class="rail-seg" data-c="interessant" id="rail-interessant"></div>
+        <div class="rail-seg" data-c="postule" id="rail-postule"></div>
+        <div class="rail-seg" data-c="entretien" id="rail-entretien"></div>
+        <div class="rail-seg" data-c="fini" id="rail-fini"></div>
+      </div>
+      <div class="rail-leg">
+        <span><i style="background:var(--line-2)"></i>A trier <b class="mono" id="leg-tri">0</b></span>
+        <span><i style="background:var(--info)"></i>Interessant <b class="mono" id="leg-interessant">0</b></span>
+        <span><i style="background:var(--warn)"></i>Postule <b class="mono" id="leg-postule">0</b></span>
+        <span><i style="background:var(--ok)"></i>Entretien <b class="mono" id="leg-entretien">0</b></span>
+        <span><i style="background:var(--surface-3)"></i>Termine <b class="mono" id="leg-fini">0</b></span>
+      </div>
+    </div>
+
+    <div class="today">
+      <button class="tile t-tri" data-tuile="tri" aria-pressed="false"><span class="num" id="t-tri">0</span><span><span class="lbl">A trier</span><span class="sub">jamais regardees, il faut decider</span></span></button>
+      <button class="tile t-relance" data-tuile="relance" aria-pressed="false"><span class="num" id="t-relance">0</span><span><span class="lbl">A relancer</span><span class="sub">postulees il y a plus de 10 jours, sans nouvelles</span></span></button>
+      <button class="tile t-expire" data-tuile="expire" aria-pressed="false"><span class="num" id="t-expire">0</span><span><span class="lbl">Expire bientot</span><span class="sub">annonce fermee dans moins de 7 jours</span></span></button>
+    </div>
+
+    <div class="bar">
+      <div class="champ-q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Entreprise, poste, ville, note..." autocomplete="off">
+      </div>
+      <div class="seg" data-groupe="qui">
+        <button data-val="tous" aria-pressed="true">Les deux</button>
+        <button data-val="Anne" aria-pressed="false">Anne</button>
+        <button data-val="Joffrey" aria-pressed="false">Joffrey</button>
+      </div>
+      <div class="seg" data-groupe="hub">
+        <button data-val="tous" aria-pressed="true">Toutes villes</button>
+        <button data-val="Munich" aria-pressed="false">Munich</button>
+        <button data-val="Francfort" aria-pressed="false">Francfort</button>
+        <button data-val="Berlin" aria-pressed="false">Berlin</button>
+        <button data-val="Hamburg" aria-pressed="false">Hambourg</button>
+      </div>
+      <div class="seg" data-groupe="contrat">
+        <button data-val="tous" aria-pressed="true">Tout contrat</button>
+        <button data-val="VIE" aria-pressed="false">VIE</button>
+        <button data-val="CDI" aria-pressed="false">CDI</button>
+        <button data-val="CDD" aria-pressed="false">CDD</button>
+      </div>
+      <button class="btn" id="btn-csv" title="Exporter la liste affichee">Export CSV</button>
+    </div>
+
+    <div class="barre-sel" id="barre-sel" hidden>
+      <span class="n-sel" id="n-sel">0 selectionnee</span>
+      <label for="sel-statut">Etape</label>
+      <select id="sel-statut"><option value="">changer pour...</option></select>
+      <label for="sel-qui">Pour</label>
+      <select id="sel-qui"><option value="">affecter a...</option><option>Anne</option><option>Joffrey</option></select>
+      <button class="btn" id="sel-tout">Tout selectionner</button>
+      <button class="btn" id="sel-rien">Annuler</button>
+    </div>
+
+    <div class="col-picker" id="col-picker"></div>
+
+    <div class="board" id="board">
+      <section class="col" data-col="tri"><div class="col-head"><span class="dot"></span><span class="nom">A trier</span><span class="n" id="n-tri">0</span></div><div class="col-body" id="col-tri"></div></section>
+      <section class="col" data-col="interessant"><div class="col-head"><span class="dot"></span><span class="nom">Interessant</span><span class="n" id="n-interessant">0</span></div><div class="col-body" id="col-interessant"></div></section>
+      <section class="col" data-col="postule"><div class="col-head"><span class="dot"></span><span class="nom">Postule</span><span class="n" id="n-postule">0</span></div><div class="col-body" id="col-postule"></div></section>
+      <section class="col" data-col="entretien"><div class="col-head"><span class="dot"></span><span class="nom">Entretien</span><span class="n" id="n-entretien">0</span></div><div class="col-body" id="col-entretien"></div></section>
+      <section class="col" data-col="fini"><div class="col-head"><span class="dot"></span><span class="nom">Termine</span><span class="n" id="n-fini">0</span></div><div class="col-body" id="col-fini"></div></section>
+    </div>
+  </section>
+
+  <section id="vue-commandes" class="vue" hidden>
+    <p class="cmd-intro">Toutes les commandes du pipeline, dans l ordre du travail. Cliquer sur une commande la copie. Elles se lancent depuis <code class="mono">C:\Users\afck2\VIE\scanner</code> pour le scan, <code class="mono">C:\Users\afck2\VIE</code> pour le reste.</p>
+
+    <div class="cmd-section">
+      <h3><span class="etape">1</span>Scanner les offres</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>scan_complet.cmd</code></td><td>Scan complet 7 etapes : veille VIE, Anne, Joffrey, Personio, ATS, verification des liens, publication du cockpit</td><td class="quand">Lundi matin</td></tr>
+        <tr><td class="cmd-cell"><code>node scan_all.js --profil anne</code></td><td>Toutes les plateformes navigateur, profil Anne</td><td class="quand">Lundi et jeudi</td></tr>
+        <tr><td class="cmd-cell"><code>node scan_all.js --profil joffrey</code></td><td>Toutes les plateformes navigateur, profil Joffrey</td><td class="quand">Lundi et jeudi</td></tr>
+        <tr><td class="cmd-cell"><code>node scan_all.js --profil anne --sites stepstone,indeed</code></td><td>Seulement StepStone et Indeed</td><td class="quand">Ponctuel</td></tr>
+        <tr><td class="cmd-cell"><code>node veille_vie.js</code></td><td>Veille Business France : VIE nouveaux et disparus</td><td class="quand">8h30, automatique</td></tr>
+        <tr><td class="cmd-cell"><code>node scan_personio.js --profil anne</code></td><td>Flux XML Personio des ETI allemandes, sans navigateur</td><td class="quand">Via scan_complet</td></tr>
+        <tr><td class="cmd-cell"><code>node scan_ats.js --profil anne</code></td><td>API Greenhouse, Lever, SmartRecruiters, Recruitee</td><td class="quand">Via scan_complet</td></tr>
+        <tr><td class="cmd-cell"><code>node verifier_liens.js --profil anne</code></td><td>Verifie si chaque annonce est encore en ligne</td><td class="quand">Via scan_complet</td></tr>
+        <tr><td class="cmd-cell"><code>node verifier_liens.js --profil joffrey --navigateur</code></td><td>Idem, avec une deuxieme passe navigateur pour les doutes</td><td class="quand">Ponctuel</td></tr>
+        <tr><td class="cmd-cell"><code>node completer_corps.js --profil joffrey</code></td><td>Relit les annonces dont le corps manquait et rejuge experience et langue</td><td class="quand">Apres scan</td></tr>
+        <tr><td class="cmd-cell"><code>node login_sites.js</code></td><td>Connexion assistee site par site, ecrit session.json</td><td class="quand">Quand une session expire</td></tr>
+        <tr><td class="cmd-cell"><code>node login_sites.js indeed</code></td><td>Reconnexion d un seul site</td><td class="quand">Quand Indeed decroche</td></tr>
+        <tr><td class="cmd-cell"><code>node login_sites.js --etat</code></td><td>Quels sites sont encore connectes</td><td class="quand">Diagnostic</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">2</span>Publier le cockpit</h3>
+      <p>Le cockpit lit les offres depuis GitHub Pages et les statuts depuis la feuille Google. Publier, c est pousser les nouvelles offres. Les statuts ne bougent pas.</p>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>publier_cockpit.cmd</code></td><td>Construit data/offres.json depuis les rapports et pousse sur GitHub. Le cockpit est a jour une minute apres.</td><td class="quand">Apres chaque scan (auto en fin de scan_complet)</td></tr>
+        <tr><td class="cmd-cell"><code>python build_data.py</code></td><td>Seulement la construction des donnees, sans pousser</td><td class="quand">Verification</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">3</span>Preparer une candidature</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>python nouvelle_candidature.py --civiweb 244871</code></td><td>Dossier complet depuis une offre Civiweb : fiche, mots-cles ATS, profil detecte</td><td class="quand">Offre VIE</td></tr>
+        <tr><td class="cmd-cell"><code>python nouvelle_candidature.py --texte offre.txt --entreprise "STARK" --poste "Category Buyer"</code></td><td>Dossier complet depuis une offre collee dans un fichier texte</td><td class="quand">Toute autre offre</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">4</span>CV adapte</h3>
+      <p>Le CV de base est <code class="mono">CV_Anne-France_Champion_VIE_2026_DE.docx</code>, version 4IR, generique, pas CSR. On en fait une copie par candidature et on y injecte uniquement les mots-cles ATS manquants listes dans <code class="mono">_MOTS_CLES.md</code>, dans la section Skills. Jamais un outil qu on n a pas utilise. Pas de photo, pas d ECTS, pas de note de memoire. Une page. Export PDF depuis Word.</p>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">5</span>Lettre de motivation</h3>
+      <p>Complete, en Word, prete a envoyer. Modele valide : <code class="mono">CANDIDATURES/2026-09-03_Westwing_Assistant_Buyer/build_lm_westwing.py</code>. Environ 400 mots, personnelle, transparente sur les manques, sans reprendre les chiffres du CV. Un script <code class="mono">build_lm_&lt;entreprise&gt;.py</code> par candidature, sur ce modele.</p>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">6</span>Envoi</h3>
+      <p>CV adapte en PDF, lettre de motivation en PDF, lettre de recommandation de Cecile (<code class="mono">OUTREACH/Lettre_de_recommandation_Anne-France_Champion.pdf</code>). Soumission sur la plateforme de l employeur. Puis, dans le cockpit, l offre passe en Postule : la date de relance se calcule toute seule.</p>
+    </div>
+
+    <div class="cmd-section">
+      <h3>Utilitaires</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>node employeurs_vie.js</code></td><td>Catalogue des employeurs qui pratiquent le VIE en Allemagne</td></tr>
+        <tr><td class="cmd-cell"><code>node fetch_offre.js 244871</code></td><td>Detail complet d une offre Civiweb</td></tr>
+        <tr><td class="cmd-cell"><code>python apprendre_ecartes.py</code></td><td>Relit les motifs d ecart saisis dans Trier et propose des regles de filtre</td></tr>
+        <tr><td class="cmd-cell"><code>node enrichir_contrat.js --profil anne</code></td><td>Rattrapage du type de contrat sur les offres existantes</td></tr>
+      </tbody></table></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Quatre bassins : Munich, Francfort, Berlin, Hambourg, et tout ce qui tient en 45 minutes de trajet. Une annonce entierement en allemand est ecartee pour Anne, gardee pour Joffrey. Une exigence d allemand natif ecarte pour les deux. En droit allemand une annonce muette sur la duree est un CDI.<br>
+  <span id="pied-sync"></span>
+</footer>
+
+</div>
+<div class="flash" id="flash"></div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
