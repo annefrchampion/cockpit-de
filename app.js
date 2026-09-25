@@ -247,8 +247,9 @@ function planifierFlush() {
   flushTimer = setTimeout(flush, 700);
 }
 function nbPending() { return Object.keys(PENDING.statuts).length + Object.keys(PENDING.taches).length; }
-function flush() {
+function flush(essai) {
   if (!API || enVol) return;
+  essai = essai || 0;
   var items = [];
   Object.keys(PENDING.statuts).forEach(function (id) { items.push({ type: 'statut', data: PENDING.statuts[id] }); });
   Object.keys(PENDING.taches).forEach(function (id) { items.push({ type: 'tache', data: PENDING.taches[id] }); });
@@ -270,10 +271,15 @@ function flush() {
       fusionner(); rendre();
       if (nbPending()) planifierFlush();
     })
-    .catch(function () { enVol = false; sync = 'erreur'; majBandeau(); });
+    .catch(function () {
+      enVol = false;
+      if (essai < 2) { setTimeout(function () { flush(essai + 1); }, 3000); return; }
+      sync = 'erreur'; majBandeau();
+    });
 }
-function rafraichir() {
+function rafraichir(essai) {
   if (!API) return Promise.resolve();
+  essai = essai || 0;
   var url = API + (API.indexOf('?') > -1 ? '&' : '?') + 't=' + Date.now();
   return fetch(url).then(function (r) { return r.json(); }).then(function (res) {
     if (!res || !res.ok) throw new Error('refus');
@@ -292,6 +298,11 @@ function rafraichir() {
     fusionner(); rendre();
     if (nbPending()) planifierFlush();
   }).catch(function () {
+    // Apps Script repond parfois 404 au premier appel apres une pause,
+    // puis normalement. On reessaie avant d afficher une erreur.
+    if (essai < 2) {
+      return new Promise(function (r) { setTimeout(r, 3000); }).then(function () { return rafraichir(essai + 1); });
+    }
     if (sync !== 'envoi') sync = 'erreur';
     majBandeau();
   });
