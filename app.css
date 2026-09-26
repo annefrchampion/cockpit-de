@@ -245,6 +245,15 @@ input[type=search]:focus{border-color:var(--accent);outline:none;box-shadow:0 0 
 .btn.plein:hover{filter:brightness(1.08)}
 .btn.mini{padding:5px 11px;font-size:12px}
 
+/* ------------------------------------------------------------ ajout manuel */
+.ajout-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;align-items:center;
+  background:var(--surface);padding:14px;border-radius:var(--r-l);box-shadow:var(--sh-2);margin-bottom:16px;
+  border-left:4px solid var(--accent)}
+.ajout-form input,.ajout-form select{background:var(--surface-2);border:1.5px solid transparent;border-radius:var(--r-s);
+  padding:8px 11px;font-size:13px;min-width:0;width:100%}
+.ajout-form input:focus,.ajout-form select:focus{background:var(--surface);border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-bg)}
+.ajout-actions{display:flex;gap:8px;grid-column:1/-1;flex-wrap:wrap}
+
 /* --------------------------------------------------------- barre selection */
 .barre-sel{
   position:sticky;top:calc(env(safe-area-inset-top,0px) + 74px);z-index:20;

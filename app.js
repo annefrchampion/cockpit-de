@@ -151,10 +151,12 @@ function fusionner() {
     if (vus[id]) return;
     var d = decisionDe(id);
     if (!d || !d.statut || d.statut === 'A traiter') return;
+    var manuel = d.source === 'ajout manuel';
     OFFRES.push({ id: id, qui: d.qui || 'Anne', entreprise: d.entreprise || '', poste: d.poste || '',
       url: d.url || '', ville: d.ville || '', hub: d.hub || '', contratType: d.contratType || '',
-      source: d.source || '', sources: d.source ? [d.source] : [], score: 0,
-      statut: d.statut, note: d.note || '', par: d.par || '', maj: d.maj || '', disparue: true });
+      source: d.source || '', sources: d.source ? [d.source] : [], score: manuel ? 100 : 0,
+      statut: d.statut, note: d.note || '', par: d.par || '', maj: d.maj || '',
+      disparue: !manuel, manuel: manuel });
   });
   OFFRES.sort(function (a, b) {
     return (b.score || 0) - (a.score || 0) || (a.entreprise || '').localeCompare(b.entreprise || '');
@@ -399,6 +401,7 @@ function chipsDe(o, complet) {
   else if (o.etatLien === 'vivante') c += '<span class="chip ok" title="verifie le ' + esc(o.verifieLe || '') + '">en ligne</span>';
   if (o.langue === 'de' || o.langue === 'de-mais-en') c += '<span class="chip de">annonce en allemand</span>';
   if (o.disparue) c += '<span class="chip">annonce retiree</span>';
+  if (o.manuel) c += '<span class="chip ok" title="Piste entree a la main, hors scanner">ajoutee a la main</span>';
   if (o.adjacent) c += '<span class="chip relance" title="Titre hors achats purs : supply chain, contrats, projet, qualite, methodes, produit.">achats elargi</span>';
   if (o.corpsNonLu) c += '<span class="chip relance" title="Le scanner n a pas pu lire la description. A lire en entier avant de postuler.">annonce non lue</span>';
   if (o.diffusionLarge) c += '<span class="chip signal" title="' + esc((o.sources || []).join(', ')) + '. Le besoin est reel et il presse.">diffusee sur ' + o.sources.length + ' plateformes</span>';
@@ -708,9 +711,39 @@ function exporterCSV() {
 }
 
 // ------------------------------------------------------------------ rendu
+function hubDe(ville) {
+  var x = (ville || '').toLowerCase();
+  if (/m[uü]nch|munich/.test(x)) return 'Munich';
+  if (/frankfurt|francfort/.test(x)) return 'Francfort';
+  if (/berlin/.test(x)) return 'Berlin';
+  if (/hamburg|hambourg/.test(x)) return 'Hamburg';
+  return ville || '';
+}
+function ajouterOffreManuelle(f) {
+  var v = function (n) { var e = f.querySelector('[name=' + n + ']'); return e ? (e.value || '').trim() : ''; };
+  if (!v('entreprise') || !v('poste')) return;
+  var url = v('url');
+  var id = url ? url.split('?')[0].replace(/\/$/, '') : ('manuel-' + Date.now().toString(36));
+  PENDING.statuts[id] = {
+    id: id, qui: v('qui') || MOI || 'Anne', statut: 'Interessant', note: '',
+    par: MOI || '', maj: aujourdhui(), ts: maintenant(),
+    entreprise: v('entreprise'), poste: v('poste'), url: url, ville: v('ville'),
+    hub: hubDe(v('ville')), contratType: v('contrat'), source: 'ajout manuel',
+  };
+  lsSet(K.pending, PENDING);
+  f.reset(); f.hidden = true;
+  fusionner(); planifierFlush(); rendre();
+  flash(v('entreprise') + ' ajoutee dans Interessant');
+}
 function refleterFiltres() {
   var q = $('q');
   if (q.value !== filtres.q) q.value = filtres.q || '';
+  // Anne ne veut pas de CDI : le bouton disparait de sa vue.
+  var cdi = document.querySelector('.seg[data-groupe="contrat"] button[data-val="CDI"]');
+  if (cdi) {
+    cdi.hidden = filtres.qui === 'Anne';
+    if (cdi.hidden && filtres.contrat === 'CDI') filtres.contrat = 'tous';
+  }
   document.querySelectorAll('.seg[data-groupe] button').forEach(function (b) {
     var g = b.parentNode.dataset.groupe;
     b.setAttribute('aria-pressed', b.dataset.val === filtres[g] ? 'true' : 'false');
@@ -749,6 +782,16 @@ document.addEventListener('click', function (e) {
   }
   if (t.id === 'btn-retry') { flush(); rafraichir(); return; }
   if (t.id === 'btn-csv') { exporterCSV(); return; }
+  if (t.id === 'btn-ajout' || t.id === 'ajout-annuler') {
+    var af = $('ajout-form');
+    af.hidden = t.id === 'ajout-annuler' ? true : !af.hidden;
+    if (!af.hidden) {
+      var sq = af.querySelector('[name=qui]');
+      if (sq && MOI) sq.value = MOI;
+      af.querySelector('[name=entreprise]').focus();
+    }
+    return;
+  }
   if ((el = q('.cmd-cell'))) {
     var code = el.querySelector('code');
     if (!code) return;
@@ -783,11 +826,12 @@ document.addEventListener('click', function (e) {
   if (q('.pick')) return;
   if (t.id === 'sel-rien') { selection = {}; rendre(); return; }
   if (t.id === 'sel-tout') { OFFRES.filter(passe).forEach(function (o) { selection[o.id] = 1; }); rendre(); return; }
-  if (q('.detail') || q('.t-form')) return;
+  if (q('.detail') || q('.t-form') || q('.ajout-form')) return;
   if ((el = q('.card'))) { ouverte = ouverte === el.dataset.id ? null : el.dataset.id; rendre(); return; }
 });
 
 document.addEventListener('submit', function (e) {
+  if (e.target.id === 'ajout-form') { e.preventDefault(); ajouterOffreManuelle(e.target); return; }
   var f = e.target.closest && e.target.closest('.t-form');
   if (!f) return;
   e.preventDefault();

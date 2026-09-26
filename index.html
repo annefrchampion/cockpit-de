@@ -114,8 +114,19 @@
         <button data-val="CDI" aria-pressed="false">CDI</button>
         <button data-val="CDD" aria-pressed="false">CDD</button>
       </div>
+      <button class="btn" id="btn-ajout" title="Une offre venue du reseau, d un mail, d un portail que le scanner ne lit pas">+ Ajouter une offre</button>
       <button class="btn" id="btn-csv" title="Exporter la liste affichee">Export CSV</button>
     </div>
+
+    <form class="ajout-form" id="ajout-form" hidden>
+      <input name="entreprise" placeholder="Entreprise *" required autocomplete="off">
+      <input name="poste" placeholder="Intitule du poste *" required autocomplete="off">
+      <input name="url" type="url" placeholder="Lien de l annonce" autocomplete="off">
+      <input name="ville" placeholder="Ville" autocomplete="off">
+      <select name="contrat"><option value="">Contrat</option><option>VIE</option><option>CDD</option><option>CDI</option><option>Interim</option></select>
+      <select name="qui"><option>Anne</option><option>Joffrey</option></select>
+      <div class="ajout-actions"><button class="btn plein" type="submit">Ajouter dans Interessant</button><button class="btn" type="button" id="ajout-annuler">Annuler</button></div>
+    </form>
 
     <div class="barre-sel" id="barre-sel" hidden>
       <span class="n-sel" id="n-sel">0 selectionnee</span>
