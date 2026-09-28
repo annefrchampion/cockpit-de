@@ -190,7 +190,7 @@
 
     <div class="cmd-section">
       <h3><span class="etape">4</span>CV adapte</h3>
-      <p>Le CV de base est <code class="mono">CV_Anne-France_Champion_VIE_2026_DE.docx</code>, version 4IR, generique, pas CSR. On en fait une copie par candidature et on y injecte uniquement les mots-cles ATS manquants listes dans <code class="mono">_MOTS_CLES.md</code>, dans la section Skills. Jamais un outil qu on n a pas utilise. Pas de photo, pas d ECTS, pas de note de memoire. Une page. Export PDF depuis Word.</p>
+      <p>Le CV de base est genere par <code class="mono">CANDIDATURES\_DOCUMENTS\build_cv_de.js</code> (format allemand : photo, notes, V.I.E. explique dans l en-tete). Une candidature = une variante JSON (sous-titre + competences reprenant les termes de l annonce) : <code class="mono">node build_cv_de.js &lt;dossier&gt;\variante_cv_&lt;x&gt;.json</code>. Jamais un outil qu on n a pas utilise. Pas d ECTS. Une page. Export PDF depuis Word.</p>
     </div>
 
     <div class="cmd-section">
@@ -200,7 +200,7 @@
 
     <div class="cmd-section">
       <h3><span class="etape">6</span>Envoi</h3>
-      <p>CV adapte en PDF, lettre de motivation en PDF, lettre de recommandation de Cecile (<code class="mono">OUTREACH/Lettre_de_recommandation_Anne-France_Champion.pdf</code>). Soumission sur la plateforme de l employeur. Puis, dans le cockpit, l offre passe en Postule : la date de relance se calcule toute seule.</p>
+      <p>CV adapte en PDF, lettre de motivation en PDF, lettres de recommandation dans <code class="mono">CANDIDATURES\_DOCUMENTS</code> : Cecile Combes (Colas, FR+EN signee, ou EN seule) et Dr Costa Melo (ICN, EN). Diplome IDRAC et releve ICN au meme endroit. Soumission sur la plateforme de l employeur. Puis, dans le cockpit, l offre passe en Postule : la date de relance se calcule toute seule.</p>
     </div>
 
     <div class="cmd-section">
