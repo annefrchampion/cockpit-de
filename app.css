@@ -329,6 +329,7 @@ input[type=search]:focus{border-color:var(--accent);outline:none;box-shadow:0 0 
 .chip.contrat{letter-spacing:.02em}
 .chip.c-vie{background:var(--vie-bg);color:var(--vie)}
 .chip.c-cdi{background:var(--ok-bg);color:var(--ok)}
+.chip.c-vie-proposable{background:var(--info-bg);color:var(--info);font-style:italic}
 .chip.c-cdd{background:var(--warn-bg);color:var(--warn)}
 .chip.c-interim{background:var(--surface-3);color:var(--ink-2)}
 .chip.c-alternance,.chip.c-stage{background:var(--stop-bg);color:var(--stop)}

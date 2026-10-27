@@ -158,8 +158,11 @@ function fusionner() {
       statut: d.statut, note: d.note || '', par: d.par || '', maj: d.maj || '',
       disparue: !manuel, manuel: manuel });
   });
+  // VIE et CDD d abord, les CDI "VIE proposable" ensuite (27/10) : sans cela
+  // le VIE TRANSDEV tombait 9e derriere huit CDI de meme bassin.
   OFFRES.sort(function (a, b) {
-    return (b.score || 0) - (a.score || 0) || (a.entreprise || '').localeCompare(b.entreprise || '');
+    return (a.vieProposable ? 1 : 0) - (b.vieProposable ? 1 : 0)
+      || (b.score || 0) - (a.score || 0) || (a.entreprise || '').localeCompare(b.entreprise || '');
   });
 
   var base = {};
@@ -357,7 +360,11 @@ function passeQui(o) { return filtres.qui === 'tous' || o.qui === filtres.qui; }
 function passe(o) {
   if (!passeQui(o)) return false;
   if (filtres.hub !== 'tous' && (o.hub || '').toLowerCase().indexOf(filtres.hub.toLowerCase()) === -1) return false;
-  if (filtres.contrat !== 'tous' && (o.contratType || 'CDI') !== filtres.contrat) return false;
+  if (filtres.contrat !== 'tous') {
+    if (filtres.contrat === 'VIE proposable') { if (!o.vieProposable) return false; }
+    else if (o.vieProposable) return false;
+    else if ((o.contratType || 'CDI') !== filtres.contrat) return false;
+  }
   if (filtres.tuile === 'tri' && !aTrier(o)) return false;
   if (filtres.tuile === 'relance' && !aRelancer(o)) return false;
   if (filtres.tuile === 'expire' && !expireBientot(o)) return false;
@@ -374,6 +381,8 @@ function prioriteTri(o) {
   if (o.nouveau) u += 8;
   if (o.primeDoublon) u += o.primeDoublon;
   if (o.corpsNonLu) u -= 6;
+  // Un CDI "VIE proposable" passe apres tout VIE ou CDD (file de tri, cinq du jour).
+  if (o.vieProposable) u -= 1000;
   return (o.score || 0) + u;
 }
 function fileTri() {
@@ -390,7 +399,11 @@ function fileTri() {
 function chipsDe(o, complet) {
   var c = '';
   var ct = o.contratType || 'CDI';
-  c += '<span class="chip contrat c-' + esc(ct.toLowerCase()) + '">' + esc(ct) + '</span>';
+  if (o.vieProposable) {
+    c += '<span class="chip contrat c-vie-proposable" title="CDI : proposer un VIE ou CDD dans la LM">VIE proposable</span>';
+  } else {
+    c += '<span class="chip contrat c-' + esc(ct.toLowerCase()) + '">' + esc(ct) + '</span>';
+  }
   if (o.hub) c += '<span class="chip hub">' + esc(o.hub) + '</span>';
   if (o.nouveau) c += '<span class="chip neuf">nouveau</span>';
   var je = joursAvant(o.expire);
@@ -683,7 +696,7 @@ function rendreOffres() {
 
   COLONNES.forEach(function (c) {
     var lot = vis.filter(function (o) { return colonneDe(o) === c.cle; });
-    lot.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+    lot.sort(function (a, b) { return (a.vieProposable ? 1 : 0) - (b.vieProposable ? 1 : 0) || (b.score || 0) - (a.score || 0); });
     $('n-' + c.cle).textContent = lot.length;
     var col = document.querySelector('.col[data-col="' + c.cle + '"]');
     col.classList.toggle('active', filtres.col === c.cle);
@@ -738,7 +751,10 @@ function ajouterOffreManuelle(f) {
 function refleterFiltres() {
   var q = $('q');
   if (q.value !== filtres.q) q.value = filtres.q || '';
-  // Anne ne veut pas de CDI : le bouton disparait de sa vue.
+  // VIE proposable visible uniquement pour Anne
+  var vpBtn = document.querySelector('.seg[data-groupe="contrat"] button[data-val="VIE proposable"]');
+  if (vpBtn) vpBtn.hidden = filtres.qui !== 'tous' && filtres.qui !== 'Anne';
+  // CDI masque pour Anne (ses CDI sont tagges VIE proposable)
   var cdi = document.querySelector('.seg[data-groupe="contrat"] button[data-val="CDI"]');
   if (cdi) {
     cdi.hidden = filtres.qui === 'Anne';
