@@ -55,7 +55,7 @@
   </button>
   <button data-vue="commandes" aria-pressed="false">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg>
-    Commandes
+    Machine VIE
   </button>
 </nav>
 
@@ -150,67 +150,63 @@
   </section>
 
   <section id="vue-commandes" class="vue" hidden>
-    <p class="cmd-intro">Toutes les commandes du pipeline, dans l ordre du travail. Cliquer sur une commande la copie. Elles se lancent depuis <code class="mono">C:\Users\afck2\VIE\scanner</code> pour le scan, <code class="mono">C:\Users\afck2\VIE</code> pour le reste.</p>
+    <p class="cmd-intro">La machine VIE complete. Toutes les skills se lancent depuis Claude Code en tapant la commande. Mise a jour 27/10/2026.</p>
 
     <div class="cmd-section">
       <h3><span class="etape">1</span>Scanner les offres</h3>
-      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
-        <tr><td class="cmd-cell"><code>scan_complet.cmd</code></td><td>Scan complet 7 etapes : veille VIE, Anne, Joffrey, Personio, ATS, verification des liens, publication du cockpit</td><td class="quand">Lundi matin</td></tr>
-        <tr><td class="cmd-cell"><code>node scan_all.js --profil anne</code></td><td>Toutes les plateformes navigateur, profil Anne</td><td class="quand">Lundi et jeudi</td></tr>
-        <tr><td class="cmd-cell"><code>node scan_all.js --profil joffrey</code></td><td>Toutes les plateformes navigateur, profil Joffrey</td><td class="quand">Lundi et jeudi</td></tr>
-        <tr><td class="cmd-cell"><code>node scan_all.js --profil anne --sites stepstone,indeed</code></td><td>Seulement StepStone et Indeed</td><td class="quand">Ponctuel</td></tr>
-        <tr><td class="cmd-cell"><code>node veille_vie.js</code></td><td>Veille Business France : VIE nouveaux et disparus</td><td class="quand">8h30, automatique</td></tr>
-        <tr><td class="cmd-cell"><code>node scan_personio.js --profil anne</code></td><td>Flux XML Personio des ETI allemandes, sans navigateur</td><td class="quand">Via scan_complet</td></tr>
-        <tr><td class="cmd-cell"><code>node scan_ats.js --profil anne</code></td><td>API Greenhouse, Lever, SmartRecruiters, Recruitee</td><td class="quand">Via scan_complet</td></tr>
-        <tr><td class="cmd-cell"><code>node verifier_liens.js --profil anne</code></td><td>Verifie si chaque annonce est encore en ligne</td><td class="quand">Via scan_complet</td></tr>
-        <tr><td class="cmd-cell"><code>node verifier_liens.js --profil joffrey --navigateur</code></td><td>Idem, avec une deuxieme passe navigateur pour les doutes</td><td class="quand">Ponctuel</td></tr>
-        <tr><td class="cmd-cell"><code>node completer_corps.js --profil joffrey</code></td><td>Relit les annonces dont le corps manquait et rejuge experience et langue</td><td class="quand">Apres scan</td></tr>
-        <tr><td class="cmd-cell"><code>node login_sites.js</code></td><td>Connexion assistee site par site, ecrit session.json</td><td class="quand">Quand une session expire</td></tr>
-        <tr><td class="cmd-cell"><code>node login_sites.js indeed</code></td><td>Reconnexion d un seul site</td><td class="quand">Quand Indeed decroche</td></tr>
-        <tr><td class="cmd-cell"><code>node login_sites.js --etat</code></td><td>Quels sites sont encore connectes</td><td class="quand">Diagnostic</td></tr>
+      <p>13 plateformes : StepStone, Indeed, LinkedIn, XING, EURES, Business France, Personio, ATS (Greenhouse, Lever, SmartRecruiters, Recruitee), Engagement Jeunes, Connexion-Emploi, Workday (Valeo).</p>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-scan</code></td><td>Lance le scan complet Anne + Joffrey, attend la fin, rebuild le cockpit et le publie. Un seul /goal = tout tourne sans interruption.</td><td class="quand">Lundi matin + ponctuel</td></tr>
       </tbody></table></div>
     </div>
 
     <div class="cmd-section">
-      <h3><span class="etape">2</span>Publier le cockpit</h3>
-      <p>Le cockpit lit les offres depuis GitHub Pages et les statuts depuis la feuille Google. Publier, c est pousser les nouvelles offres. Les statuts ne bougent pas.</p>
-      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
-        <tr><td class="cmd-cell"><code>publier_cockpit.cmd</code></td><td>Construit data/offres.json depuis les rapports et pousse sur GitHub. Le cockpit est a jour une minute apres.</td><td class="quand">Apres chaque scan (auto en fin de scan_complet)</td></tr>
-        <tr><td class="cmd-cell"><code>python build_data.py</code></td><td>Seulement la construction des donnees, sans pousser</td><td class="quand">Verification</td></tr>
+      <h3><span class="etape">2</span>Candidature</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-candidature</code></td><td>Pipeline complet de candidature : cree le dossier, analyse les keywords, build le CV adapte, genere le brouillon LM, ajoute au tracker.</td><td class="quand">Offre a postuler</td></tr>
+      </tbody></table></div>
+      <p>CV V2 (27/10/2026) : allege, 1 page, ATS-optimise, Centre d interets, outils IA. Base : <code class="mono">CV_Anne-France_Champion_VIE_2026_DE.docx</code>. Jamais regeneree, toujours copiee et adaptee par offre.</p>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">3</span>Outreach et reseau</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-outreach</code></td><td>Cold outreach sur une entreprise cible : enrichit via SIRENE, trouve les emails RH, genere email froid + message LinkedIn 300 chars.</td><td class="quand">Entreprise cible sans offre visible</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-alumni</code></td><td>Activation reseau alumni ICN et Prytanee dans une entreprise cible en Allemagne. Cherche les anciens, redige le message.</td><td class="quand">Toute entreprise cible</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-relance</code></td><td>Identifie les candidatures a relancer dans le tracker, redige les messages LinkedIn/email de follow-up.</td><td class="quand">Candidature sans nouvelles depuis 10j+</td></tr>
       </tbody></table></div>
     </div>
 
     <div class="cmd-section">
-      <h3><span class="etape">3</span>Preparer une candidature</h3>
-      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
-        <tr><td class="cmd-cell"><code>python nouvelle_candidature.py --civiweb 244871</code></td><td>Dossier complet depuis une offre Civiweb : fiche, mots-cles ATS, profil detecte</td><td class="quand">Offre VIE</td></tr>
-        <tr><td class="cmd-cell"><code>python nouvelle_candidature.py --texte offre.txt --entreprise "STARK" --poste "Category Buyer"</code></td><td>Dossier complet depuis une offre collee dans un fichier texte</td><td class="quand">Toute autre offre</td></tr>
+      <h3><span class="etape">4</span>LinkedIn (11 skills)</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/li-profile</code></td><td>Score ton profil LinkedIn /100 sur 12 criteres, reecrit les sections faibles</td></tr>
+        <tr><td class="cmd-cell"><code>/li-post</code></td><td>Redige un post LinkedIn avec 21 formules de hook, dans ton ton</td></tr>
+        <tr><td class="cmd-cell"><code>/li-comment</code></td><td>Commente le post de quelqu un (CPO, directeur achats cible)</td></tr>
+        <tr><td class="cmd-cell"><code>/li-dm</code></td><td>Note de connexion (200 chars), premier message, 2 follow-ups</td></tr>
+        <tr><td class="cmd-cell"><code>/li-plan</code></td><td>Plan de la semaine : quoi poster, quand, qui engager</td></tr>
+        <tr><td class="cmd-cell"><code>/li-human</code></td><td>Nettoie les marqueurs IA (tirets longs, slop words, watermarks)</td></tr>
+        <tr><td class="cmd-cell"><code>/li-reply</code></td><td>Trie et repond aux commentaires sous tes posts</td></tr>
+        <tr><td class="cmd-cell"><code>/li-carousel</code></td><td>Cree un post document/slides LinkedIn</td></tr>
+        <tr><td class="cmd-cell"><code>/li-repurpose</code></td><td>Transforme un contenu long en posts LinkedIn</td></tr>
+        <tr><td class="cmd-cell"><code>/li-inbox</code></td><td>Trie ta boite de reception LinkedIn (leads, recruteurs, spam)</td></tr>
+        <tr><td class="cmd-cell"><code>/li-audit</code></td><td>Analyse quels posts ont marche et pourquoi</td></tr>
       </tbody></table></div>
     </div>
 
     <div class="cmd-section">
-      <h3><span class="etape">4</span>CV adapte</h3>
-      <p>LA BASE DES CV : <code class="mono">CANDIDATURES\_DOCUMENTS\CV_Anne-France_Champion_VIE_2026_DE.docx</code> (validee le 28/09 : une colonne, sans photo, notes, Rennes, BAFA, lien cliquable). Jamais regeneree. Une candidature = une copie de la base avec le sous-titre et les competences adaptes aux termes exacts de l annonce : <code class="mono">python adapter_cv.py --out &lt;dossier&gt;\CV_Anne-France_Champion_&lt;Entreprise&gt;.docx --sous-titre "..." --procurement "..."</code>. Jamais un outil qu on n a pas utilise. Pas d ECTS. Une page. Export PDF depuis Word.</p>
-    </div>
-
-    <div class="cmd-section">
-      <h3><span class="etape">5</span>Lettre de motivation</h3>
-      <p>Complete, en Word, prete a envoyer. Modele valide : <code class="mono">CANDIDATURES/2026-09-03_Westwing_Assistant_Buyer/build_lm_westwing.py</code>. Environ 400 mots, personnelle, transparente sur les manques, sans reprendre les chiffres du CV. Un script <code class="mono">build_lm_&lt;entreprise&gt;.py</code> par candidature, sur ce modele.</p>
-    </div>
-
-    <div class="cmd-section">
-      <h3><span class="etape">6</span>Envoi</h3>
-      <p>CV adapte en PDF, lettre de motivation en PDF, lettres de recommandation dans <code class="mono">CANDIDATURES\_DOCUMENTS</code> : Cecile Combes (Colas, FR+EN signee, ou EN seule) et Dr Costa Melo (ICN, EN). Diplome IDRAC et releve ICN au meme endroit. Soumission sur la plateforme de l employeur. Puis, dans le cockpit, l offre passe en Postule : la date de relance se calcule toute seule.</p>
-    </div>
-
-    <div class="cmd-section">
-      <h3>Utilitaires</h3>
-      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Commande</th><th>Ce que ca fait</th></tr></thead><tbody>
-        <tr><td class="cmd-cell"><code>node employeurs_vie.js</code></td><td>Catalogue des employeurs qui pratiquent le VIE en Allemagne</td></tr>
-        <tr><td class="cmd-cell"><code>node fetch_offre.js 244871</code></td><td>Detail complet d une offre Civiweb</td></tr>
-        <tr><td class="cmd-cell"><code>python apprendre_ecartes.py</code></td><td>Relit les motifs d ecart saisis dans Trier et propose des regles de filtre</td></tr>
-        <tr><td class="cmd-cell"><code>node enrichir_contrat.js --profil anne</code></td><td>Rattrapage du type de contrat sur les offres existantes</td></tr>
+      <h3><span class="etape">5</span>Preparation et pilotage</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-prep</code></td><td>Preparation entretien en 10 minutes : scrape le rapport annuel, les news, l organigramme achats, prepare les reponses STAR et les 5 questions a poser.</td><td class="quand">Entretien programme</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-status</code></td><td>Pulse hebdomadaire : lit le tracker + cockpit + rapports de scan, affiche les KPIs (candidatures, pipeline, taux conversion, outreach).</td><td class="quand">Point hebdo</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-allemagne</code></td><td>Projet VIE Allemagne d Anne-France Champion et recherche CDI Allemagne de Joffrey Tatibouet. Messages LinkedIn, LM, recherche de couple.</td><td class="quand">Pilotage general</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-goal</code></td><td>Lance le scan complet Anne + Joffrey, attend la fin, rebuild le cockpit et le publie. Un seul /goal = tout tourne sans interruption. NE PAS invoquer sur candidature, outreach, relance.</td><td class="quand">Scan complet</td></tr>
       </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3>Donnees marche</h3>
+      <p>4 fichiers de recherche approfondie dans <code class="mono">C:\Users\afck2\VIE\</code> : VIE sans allemand, secteurs emergents DE, marche procurement DE, entreprises cibles VIE. Triangle d or : Sondervermogen 500Md infra + Zeitenwende 377Md defense + LkSG supply chain compliance. ESG = differenciateur tueur (France 80% vs Allemagne 68% EcoVadis).</p>
     </div>
   </section>
 </main>
