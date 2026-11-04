@@ -26,7 +26,8 @@ var COLONNES = [
   { cle: 'entretien',   nom: 'Entretien',   statuts: ['Entretien'] },
   { cle: 'fini',        nom: 'Termine',     statuts: ['Refus', 'Ecarte', 'Lien mort'] },
 ];
-var LIB_CAT = { admin: 'Administratif', diplome: 'Diplome ICN', reseau: 'Reseau',
+var LIB_CAT = { moteur: 'Candidatures a preparer (le moteur propose)', linkedin: 'LinkedIn a valider : cocher = envoyer',
+  admin: 'Administratif', diplome: 'Diplome ICN', reseau: 'Reseau',
   documents: 'Documents', sante: 'Sante', logement: 'Logement', divers: 'Divers' };
 var LIB_EXIG = { ans: 'Experience', langue: 'Langues', diplome: 'Diplome' };
 var TEINTES = ['#C2540A', '#0B7285', '#3A5BC7', '#15803D', '#8E44AD', '#B0306A'];
