@@ -399,12 +399,19 @@ function fileTri() {
 function chipsDe(o, complet) {
   var c = '';
   var ct = o.contratType || 'CDI';
-  if (o.vieProposable) {
+  // Verdicts du moteur (moteur.py, 04/11) : V.I.E. verifie par SIREN, correspondance sur 5, chemin chaud, dossier.
+  if (ct !== 'VIE' && o.vie) {
+    var lv = { oui: 'V.I.E. possible', probable: 'V.I.E. probable', non: ct + ', pas de V.I.E.', '?': 'V.I.E. a verifier' }[o.vie.v] || ct;
+    c += '<span class="chip contrat ' + (o.vie.v === 'oui' || o.vie.v === 'probable' ? 'c-vie-proposable' : 'c-' + esc(ct.toLowerCase())) + '" title="' + esc(o.vie.r) + '">' + esc(lv) + '</span>';
+  } else if (o.vieProposable) {
     c += '<span class="chip contrat c-vie-proposable" title="CDI : proposer un VIE ou CDD dans la LM">VIE proposable</span>';
   } else {
     c += '<span class="chip contrat c-' + esc(ct.toLowerCase()) + '">' + esc(ct) + '</span>';
   }
   if (o.hub) c += '<span class="chip hub">' + esc(o.hub) + '</span>';
+  if (o.fit != null) c += '<span class="chip ' + (o.fit >= 4 ? 'ok' : (o.fit === 3 ? 'relance' : '')) + '" title="' + esc(o.fitD || '') + '">' + o.fit + '/5</span>';
+  if (o.chaud) c += '<span class="chip signal" title="La personne que tu connais dans l entreprise">' + esc(o.chaud) + '</span>';
+  if (o.dossier) c += '<span class="chip ok" title="' + esc(o.dossier) + '">dossier pret</span>';
   if (o.nouveau) c += '<span class="chip neuf">nouveau</span>';
   var je = joursAvant(o.expire);
   if (je !== null && je >= 0 && je <= 14) c += '<span class="chip ' + (je <= 7 ? 'urgent' : 'relance') + '">expire J-' + je + '</span>';
@@ -462,6 +469,12 @@ function carte(o, sansPick) {
       + '<div class="rangee"><label>Etape</label><select class="f-statut" data-id="' + esc(o.id) + '">' + opts + '</select>'
       + '<label style="margin-left:6px">Pour</label><select class="f-qui" data-id="' + esc(o.id) + '">' + quiOpts + '</select></div>'
       + exig
+      + (o.vie ? '<div class="moteur" style="font-size:12.5px;line-height:1.55;margin:8px 0;padding:8px 10px;border-radius:8px;background:rgba(127,127,127,.10)">'
+        + '<div><b>V.I.E. :</b> ' + esc(o.vie.r) + '</div>'
+        + '<div><b>' + o.fit + '/5 :</b> ' + esc(o.fitD || '') + '</div>'
+        + (o.chaud ? '<div><b>Chemin chaud :</b> ' + esc(o.chaud) + '</div>' : '')
+        + (o.dossier ? '<div><b>Dossier :</b> CANDIDATURES/' + esc(o.dossier) + '</div>' : '')
+        + '</div>' : '')
       + (o.extrait ? '<p class="extrait">' + esc(o.extrait) + '</p>' : '')
       + '<textarea class="f-note" data-id="' + esc(o.id) + '" placeholder="Contact, date de relance, retour d entretien, ce que l autre doit savoir...">' + esc(o.note || '') + '</textarea>'
       + '<div class="rangee">'
