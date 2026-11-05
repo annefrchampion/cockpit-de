@@ -26,7 +26,8 @@ var COLONNES = [
   { cle: 'entretien',   nom: 'Entretien',   statuts: ['Entretien'] },
   { cle: 'fini',        nom: 'Termine',     statuts: ['Refus', 'Ecarte', 'Lien mort'] },
 ];
-var LIB_CAT = { moteur: 'Candidatures a preparer (le moteur propose)', linkedin: 'LinkedIn a valider : cocher = envoyer',
+var LIB_CAT = { moteur: 'Candidatures : Claude prepare et depose. Cocher = il agit, annoter = il lit avant',
+  linkedin: 'LinkedIn : cocher = envoyer, annoter = Claude relit avant',
   admin: 'Administratif', diplome: 'Diplome ICN', reseau: 'Reseau',
   documents: 'Documents', sante: 'Sante', logement: 'Logement', divers: 'Divers' };
 var LIB_EXIG = { ans: 'Experience', langue: 'Langues', diplome: 'Diplome' };
@@ -63,6 +64,15 @@ function joursDepuis(d) {
 }
 function joursAvant(d) { var j = joursDepuis(d); return j === null ? null : -j; }
 function dateLisible(d) { return /^\d{4}-\d{2}-\d{2}/.test(d || '') ? String(d).slice(0, 10) : ''; }
+// La feuille renvoie parfois une date au format long JS (« Wed Nov 04 2026 00:00:00 GMT+0100 (...) ») : on la ramene a yyyy-mm-dd.
+function normDate(d) {
+  d = d == null ? '' : String(d);
+  if (/^\d{4}-\d{2}-\d{2}/.test(d)) return d.slice(0, 10);
+  var t = Date.parse(d.replace(/\s*\(.*\)$/, ''));
+  if (isNaN(t)) return d;
+  var x = new Date(t);
+  return x.getFullYear() + '-' + ('0' + (x.getMonth() + 1)).slice(-2) + '-' + ('0' + x.getDate()).slice(-2);
+}
 function lsGet(k, def) {
   try { var v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch (e) { return def; }
 }
@@ -88,6 +98,55 @@ function lienReseau(ent) {
     + '&network=%5B%22F%22%2C%22S%22%5D&origin=FACETED_SEARCH';
 }
 function classeStatut(s) { return 's-' + String(s || '').toLowerCase().replace(/\s+/g, '-'); }
+function horodatage() {
+  var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+// Texte echappe, URL cliquables. La ponctuation qui suit un lien n en fait pas partie.
+function lienifier(s) {
+  return esc(s).replace(/https?:\/\/\S+/g, function (u) {
+    var fin = (u.match(/[.,;:!?)]+$/) || [''])[0];
+    u = u.slice(0, u.length - fin.length);
+    return '<a href="' + u + '" target="_blank" rel="noopener">' + u + '</a>' + fin;
+  });
+}
+
+// ------------------------------------------------- annotations dans les notes
+// Convention (05/11), lue aussi par moteur.py et par Claude : la colonne notes commence par le
+// texte du moteur, puis des blocs, chacun sur une nouvelle ligne :
+//   @Anne 2026-11-05 12:10 : ce qu Anne demande
+//   @Claude 2026-11-05 15:02 : ce que Claude repond
+// Une annotation est non lue tant que le dernier bloc est un @Anne.
+var RE_BLOC = /(?:^|\n)@(Anne|Claude) (\d{4}-\d{2}-\d{2} \d{2}:\d{2}) : /;
+function decouperNotes(notes) {
+  var p = String(notes == null ? '' : notes).split(RE_BLOC);
+  var r = { moteur: p[0].replace(/\s+$/, ''), blocs: [] };
+  for (var i = 1; i < p.length; i += 3) r.blocs.push({ qui: p[i], date: p[i + 1], texte: (p[i + 2] || '').replace(/\s+$/, '') });
+  return r;
+}
+function assemblerNotes(d) {
+  var s = d.moteur || '';
+  (d.blocs || []).forEach(function (b) { s += (s ? '\n' : '') + '@' + b.qui + ' ' + b.date + ' : ' + b.texte; });
+  return s;
+}
+// Tache posee par le moteur ou par Claude : par, ou un identifiant hors t- (creerTache et
+// taches_seed donnent t-), ou deja un bloc @. Une coche d Anne remplace par, pas l identifiant.
+function tacheClaude(t) {
+  return t.par === 'moteur' || t.par === 'claude' || !/^t-/.test(t.id || '') || RE_BLOC.test(t.notes || '');
+}
+function autoTestNotes() {
+  try {
+    var x = decouperNotes('');
+    console.assert(x.moteur === '' && x.blocs.length === 0 && assemblerNotes(x) === '', 'notes : vide');
+    x = decouperNotes('Cocher = envoyer. https://a.b/c ');
+    console.assert(x.moteur === 'Cocher = envoyer. https://a.b/c' && x.blocs.length === 0 && assemblerNotes(x) === x.moteur, 'notes : moteur seul');
+    var n = 'V.I.E. probable | 4/5\n@Anne 2026-11-05 12:10 : sans note\n@Claude 2026-11-05 15:02 : fait, envoyee\n@Anne 2026-11-05 16:00 : merci,\nrelance J+7';
+    x = decouperNotes(n);
+    console.assert(x.moteur === 'V.I.E. probable | 4/5' && x.blocs.length === 3 && x.blocs[0].qui === 'Anne'
+      && x.blocs[1].qui === 'Claude' && x.blocs[1].date === '2026-11-05 15:02' && x.blocs[2].texte === 'merci,\nrelance J+7'
+      && assemblerNotes(x) === n, 'notes : moteur + Anne + Claude + Anne');
+  } catch (e) { console.warn('auto-test notes', e); }
+}
 
 // ----------------------------------------------------------- persistance
 function sauverUI() {
@@ -174,7 +233,7 @@ function fusionner() {
   });
   var suppr = {};
   (DATA.seed.tachesSupprimees || []).forEach(function (id) { suppr[id] = 1; });
-  TACHES = Object.keys(base).map(function (id) { return base[id]; }).filter(function (t) {
+  TACHES = Object.keys(base).map(function (id) { var t = base[id]; t.date = normDate(t.date); t.maj = normDate(t.maj); return t; }).filter(function (t) {
     return t.id && t.texte && !suppr[t.id] && String(t.supprimee || '') !== '1';
   });
 }
@@ -228,14 +287,32 @@ function ligneTache(t, patch) {
     statut: r.statut || 'a faire', notes: r.notes || '', par: r.par, maj: r.maj, ts: r.ts,
     supprimee: r.supprimee ? '1' : '' };
 }
+function tacheParId(id) {
+  for (var i = 0; i < TACHES.length; i++) if (TACHES[i].id === id) return TACHES[i];
+  return null;
+}
 function deciderTache(id, patch, silencieux) {
-  var t = null;
-  for (var i = 0; i < TACHES.length; i++) if (TACHES[i].id === id) t = TACHES[i];
+  var t = tacheParId(id);
   if (!t) return;
   PENDING.taches[id] = ligneTache(t, patch);
   lsSet(K.pending, PENDING);
   fusionner(); planifierFlush();
   if (!silencieux) rendre();
+}
+// Reponse d Anne pour Claude : le dernier bloc @Anne est remplace tant que Claude ne l a pas lu,
+// sinon un nouveau bloc est ajoute. Champ vide = le bloc non lu est retire.
+function annoterTache(id, texte, silencieux) {
+  var t = tacheParId(id);
+  if (!t) return;
+  var d = decouperNotes(t.notes), dernier = d.blocs[d.blocs.length - 1];
+  var vide = /^\s*$/.test(texte);
+  if (dernier && dernier.qui === 'Anne') {
+    if (vide) d.blocs.pop();
+    else { dernier.texte = texte; dernier.date = horodatage(); }
+  } else if (!vide) {
+    d.blocs.push({ qui: 'Anne', date: horodatage(), texte: texte });
+  } else return;
+  deciderTache(id, { notes: assemblerNotes(d) }, silencieux);
 }
 function creerTache(cat, texte, date) {
   var t = { id: 't-' + Date.now().toString(36), cat: cat || 'divers', texte: texte.trim(),
@@ -413,7 +490,8 @@ function chipsDe(o, complet) {
   if (o.fit != null) c += '<span class="chip ' + (o.fit >= 4 ? 'ok' : (o.fit === 3 ? 'relance' : '')) + '" title="' + esc(o.fitD || '') + '">' + o.fit + '/5</span>';
   if (o.chaud) c += '<span class="chip signal" title="La personne que tu connais dans l entreprise">' + esc(o.chaud) + '</span>';
   if (o.dossier) c += '<span class="chip ok" title="' + esc(o.dossier) + '">dossier pret</span>';
-  if (o.nouveau) c += '<span class="chip neuf">nouveau</span>';
+  var jv = joursDepuis(o.vuLe);
+  if (o.nouveau || (jv !== null && jv < 2)) c += '<span class="chip neuf"' + (o.vuLe ? ' title="premiere vue le ' + esc(o.vuLe) + '"' : '') + '>nouveau</span>';
   var je = joursAvant(o.expire);
   if (je !== null && je >= 0 && je <= 14) c += '<span class="chip ' + (je <= 7 ? 'urgent' : 'relance') + '">expire J-' + je + '</span>';
   if (aRelancer(o)) c += '<span class="chip relance">a relancer, J+' + joursDepuis(o.maj) + '</span>';
@@ -509,10 +587,29 @@ function carteTache(t) {
     chips += '<span class="chip' + cls + '">' + lib + ' &middot; ' + esc(t.date) + '</span>';
   }
   var opts = STATUTS_TACHE.map(function (x) { return '<option value="' + x + '"' + (t.statut === x ? ' selected' : '') + '>' + x + '</option>'; }).join('');
+  var corps;
+  if (tacheClaude(t)) {
+    // Texte du moteur en lecture seule, fil des blocs, puis le champ de reponse pour Claude.
+    var d = decouperNotes(t.notes), nb = d.blocs.length, dernier = nb ? d.blocs[nb - 1] : null;
+    var nonLue = !!dernier && dernier.qui === 'Anne';
+    if (dernier) {
+      chips += nonLue ? '<span class="chip relance">annotation a lire par Claude</span>'
+        : '<span class="chip ok">lue par Claude le ' + esc(dernier.date) + '</span>';
+    }
+    corps = d.moteur ? '<div class="t-claude">' + lienifier(d.moteur).replace(/CANDIDATURES\/\S+/g, '<span class="mono">$&</span>') + '</div>' : '';
+    d.blocs.forEach(function (b, i) {
+      if (nonLue && i === nb - 1) return; // le bloc non lu est dans le champ de reponse
+      corps += '<div class="t-claude ' + (b.qui === 'Anne' ? 't-bloc-anne' : 't-bloc-claude') + '"><b>' + b.qui + ', ' + esc(b.date) + ' :</b> ' + lienifier(b.texte) + '</div>';
+    });
+    corps += '<textarea class="t-rep" data-id="' + esc(t.id) + '" placeholder="Ta reponse pour Claude : modification, question, consigne. Il la lit avant d agir.">' + esc(nonLue ? dernier.texte : '') + '</textarea>'
+      + '<div class="t-aide">Cocher = Claude agit au prochain passage (chaque heure, 8h-19h). Ecris ici d abord s il y a quelque chose a changer.</div>';
+  } else {
+    corps = '<textarea class="t-note" data-id="' + esc(t.id) + '" placeholder="note, avancement, ce que l autre doit savoir...">' + esc(t.notes || '') + '</textarea>';
+  }
   return '<article class="tache' + (fini ? ' done' : '') + '">'
     + '<label class="coche"><input type="checkbox" class="t-fait" data-id="' + esc(t.id) + '"' + (t.statut === 'fait' ? ' checked' : '') + '></label>'
     + '<div class="t-corps"><div class="t-titre">' + esc(t.texte) + '</div><div class="chips">' + chips + '</div>'
-    + '<textarea class="t-note" data-id="' + esc(t.id) + '" placeholder="note, avancement, ce que l autre doit savoir...">' + esc(t.notes || '') + '</textarea>'
+    + corps
     + '<div class="t-pied"><select class="t-statut" data-id="' + esc(t.id) + '">' + opts + '</select>'
     + '<input type="date" class="t-date" data-id="' + esc(t.id) + '" value="' + esc(t.date || '') + '">'
     + '<button class="t-suppr" data-id="' + esc(t.id) + '">supprimer</button>'
@@ -788,6 +885,7 @@ function rendre() {
   p.textContent = nRetard + nProche; p.hidden = !(nRetard + nProche); p.className = 'pastille' + (nRetard ? ' rouge' : '');
   $('n-taches').textContent = TACHES.filter(tacheActive).length;
   refleterFiltres();
+  majScanMeta();
   sauverUI();
   rendreAujourdhui();
   rendreTrier();
@@ -877,6 +975,7 @@ document.addEventListener('change', function (e) {
   if ((el = q('.t-statut'))) { deciderTache(el.dataset.id, { statut: el.value }); return; }
   if ((el = q('.t-date'))) { deciderTache(el.dataset.id, { date: el.value }); return; }
   if ((el = q('.t-note'))) { deciderTache(el.dataset.id, { notes: el.value }); return; }
+  if ((el = q('.t-rep'))) { annoterTache(el.dataset.id, el.value); return; }
   if ((el = q('.o-pick'))) { if (el.checked) selection[el.dataset.id] = 1; else delete selection[el.dataset.id]; rendre(); return; }
   if (t.id === 'sel-statut') { deciderLot('statut', t.value); return; }
   if (t.id === 'sel-qui') { deciderLot('qui', t.value); return; }
@@ -891,7 +990,9 @@ document.addEventListener('input', function (e) {
   var n = t.closest && t.closest('textarea.f-note');
   if (n) { decider(n.dataset.id, { note: n.value }, true); return; }
   var tn = t.closest && t.closest('textarea.t-note');
-  if (tn) { deciderTache(tn.dataset.id, { notes: tn.value }, true); }
+  if (tn) { deciderTache(tn.dataset.id, { notes: tn.value }, true); return; }
+  var tr = t.closest && t.closest('textarea.t-rep');
+  if (tr) { annoterTache(tr.dataset.id, tr.value, true); }
 });
 
 document.addEventListener('keydown', function (e) {
@@ -924,15 +1025,55 @@ document.addEventListener('keydown', function (e) {
 });
 
 document.addEventListener('visibilitychange', function () {
-  if (document.visibilityState === 'visible') { rafraichir(); if (nbPending()) flush(); }
+  if (document.visibilityState === 'visible') { rafraichir(); verifierFraicheur(); if (nbPending()) flush(); }
 });
 window.addEventListener('online', function () { if (nbPending()) flush(); });
 setInterval(function () { if (document.visibilityState === 'visible') rafraichir(); }, 90000);
 setInterval(function () { if (nbPending() && !enVol) flush(); }, 30000);
+setInterval(verifierFraicheur, 300000);
 
 // -------------------------------------------------------------- demarrage
 function charger(url) {
   return fetch(url + '?v=' + Date.now()).then(function (r) { if (!r.ok) throw new Error(url); return r.json(); });
+}
+function chargerDonnees() {
+  return Promise.all([
+    charger('data/offres.json'),
+    charger('data/taches_seed.json').catch(function () { return []; }),
+    charger('data/decisions_seed.json').catch(function () { return { offres: {}, taches: {}, tachesSupprimees: [] }; }),
+    charger('data/meta.json').catch(function () { return {}; }),
+  ]).then(function (r) {
+    DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3];
+  });
+}
+// Nouvelles offres sur la periode (meta.nouveaux24h / nouveaux7j, par profil), selon le filtre Anne / Joffrey.
+function nbNouveaux(cle) {
+  var n = (DATA.meta || {})[cle] || {};
+  return filtres.qui === 'tous' ? (n.Anne || 0) + (n.Joffrey || 0) : (n[filtres.qui] || 0);
+}
+function majScanMeta() {
+  var m = DATA.meta || {};
+  var nA = DATA.offres.filter(function (o) { return o.qui === 'Anne'; }).length;
+  var nJ = DATA.offres.length - nA;
+  $('scan-meta').innerHTML = 'dernier scan <span class="mono">' + esc(m.genere || '?')
+    + (m.publie ? ' ' + esc(String(m.publie).slice(11, 16)) : '') + '</span>'
+    + ' &middot; Anne ' + nA + ', Joffrey ' + nJ + ' &middot; <b>' + nbNouveaux('nouveaux7j') + '</b> nouvelles sur 7 jours';
+}
+// Le cockpit vit : toutes les 5 minutes, page visible, si meta.publie a change les donnees du scan
+// sont rechargees et refusionnees. PENDING et SHEET ne bougent pas, la vue, les filtres et la
+// carte ouverte non plus. Le flash compte les offres absentes de la version precedente.
+function verifierFraicheur() {
+  if (!chargeOK || document.visibilityState !== 'visible') return;
+  charger('data/meta.json').then(function (m) {
+    if (!m || !m.publie || m.publie === (DATA.meta || {}).publie) return;
+    var avant = {};
+    DATA.offres.forEach(function (o) { avant[o.id] = 1; });
+    return chargerDonnees().then(function () {
+      fusionner(); rendre();
+      var n = DATA.offres.filter(function (o) { return !avant[o.id]; }).length;
+      if (n) flash('Cockpit mis a jour : ' + n + (n > 1 ? ' nouvelles offres' : ' nouvelle offre'));
+    });
+  }).catch(function () {});
 }
 function demarrer() {
   appliquerTheme(lsGet(K.theme, ''));
@@ -946,19 +1087,9 @@ function demarrer() {
   var cache = lsGet(K.cache, null);
   if (cache && cache.statuts) SHEET = cache;
 
-  Promise.all([
-    charger('data/offres.json'),
-    charger('data/taches_seed.json').catch(function () { return []; }),
-    charger('data/decisions_seed.json').catch(function () { return { offres: {}, taches: {}, tachesSupprimees: [] }; }),
-    charger('data/meta.json').catch(function () { return {}; }),
-  ]).then(function (r) {
-    DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3];
+  chargerDonnees().then(function () {
     chargeOK = true;
     var m = DATA.meta;
-    var nA = DATA.offres.filter(function (o) { return o.qui === 'Anne'; }).length;
-    var nJ = DATA.offres.length - nA;
-    $('scan-meta').innerHTML = 'Quatre bassins &middot; dernier scan <span class="mono">' + esc(m.genere || '?') + '</span>'
-      + ' &middot; Anne ' + nA + ', Joffrey ' + nJ + (m.nouveaux ? ' &middot; <b>' + m.nouveaux + ' nouvelles</b>' : '');
     var sel = $('sel-statut');
     STATUTS.forEach(function (s) { var o = document.createElement('option'); o.value = s; o.textContent = s; sel.appendChild(o); });
     fusionner();
@@ -973,5 +1104,6 @@ function demarrer() {
       + esc(err.message) + '. Verifie que data/offres.json est publie.</span></div>';
   });
 }
+autoTestNotes();
 demarrer();
 })();

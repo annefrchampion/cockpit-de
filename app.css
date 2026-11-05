@@ -321,7 +321,7 @@ input[type=search]:focus{border-color:var(--accent);outline:none;box-shadow:0 0 
 .chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
 .chip{font-size:10.5px;padding:3px 8px;border-radius:6px;background:var(--surface-2);color:var(--ink-2);font-weight:600;white-space:nowrap}
 .chip.hub{background:var(--surface-3);color:var(--ink-2)}
-.chip.neuf{background:var(--ok-bg);color:var(--ok)}
+.chip.neuf{background:transparent;color:var(--ok);box-shadow:inset 0 0 0 1px var(--ok-line)}
 .chip.urgent{background:var(--stop-bg);color:var(--stop)}
 .chip.relance{background:var(--warn-bg);color:var(--warn)}
 .chip.de{background:var(--warn-bg);color:var(--warn)}
@@ -401,6 +401,17 @@ input[type=search]:focus{border-color:var(--accent);outline:none;box-shadow:0 0 
 .t-note{width:100%;margin-top:9px;background:var(--surface-2);border:1.5px solid transparent;border-radius:var(--r-s);
   padding:9px 11px;font-size:12.5px;resize:vertical;min-height:38px;line-height:1.5}
 .t-note:focus{background:var(--surface);border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-bg)}
+/* tache du moteur : texte de Claude en lecture seule, fil des blocs, reponse d Anne */
+.t-claude{margin-top:8px;padding:8px 11px;background:var(--surface-2);border-radius:var(--r-s);font-size:12.5px;line-height:1.5;
+  color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere}
+.t-claude b{font-weight:600;color:var(--ink)}
+.t-claude .mono{font-size:12px}
+.t-claude.t-bloc-anne{border-left:3px solid var(--accent)}
+.t-claude.t-bloc-claude{border-left:3px solid var(--info);color:var(--ink)}
+.t-rep{width:100%;margin-top:8px;background:var(--surface);border:1.5px solid var(--accent-line);border-radius:var(--r-s);
+  padding:9px 11px;font-size:12.5px;resize:vertical;min-height:44px;line-height:1.5}
+.t-rep:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-bg)}
+.t-aide{margin-top:5px;font-size:11px;line-height:1.45;color:var(--ink-3)}
 .t-pied{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px}
 .t-statut,.t-date{background:var(--surface);border:1.5px solid var(--line-2);border-radius:var(--r-s);padding:5px 9px;font-size:12.5px}
 .t-suppr{border:none;background:transparent;color:var(--ink-3);font-size:12px;text-decoration:underline;padding:4px}
