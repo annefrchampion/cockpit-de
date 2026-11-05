@@ -5,3 +5,6 @@ ou externe, un programme ex�cutable ou un fichier de commandes.
 python: can't open file 'C:\\Users\\afck2\\VIE\\cockpit\\moteur.py': [Errno 2] No such file or directory
 'moteur_claude.cmd' n'est pas reconnu en tant que commande interne
 ou externe, un programme ex�cutable ou un fichier de commandes.
+python: can't open file 'C:\\Users\\afck2\\VIE\\cockpit\\moteur.py': [Errno 2] No such file or directory
+'moteur_claude.cmd' n'est pas reconnu en tant que commande interne
+ou externe, un programme ex�cutable ou un fichier de commandes.
