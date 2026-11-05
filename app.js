@@ -1050,13 +1050,16 @@ function chargerDonnees() {
 }
 // Liste des sources (05/11, Anne : « dresse la liste de tous les sites que tu scrappes pour la publier sur le cockpit »).
 // Une ligne par source, une colonne par profil, depuis data/sante.json (sante_sources.py, a chaque scan complet).
-var ORDRE_SOURCES = ['StepStone', 'XING', 'LinkedIn', 'Arbeitsagentur', 'EURES', 'englishjobs.de', 'Business France (VIE)', 'Business France (veille)',
-  'Engagement Jeunes', 'Connexion-Emploi', 'Personio', 'ATS', 'Indeed.de'];
+var ORDRE_SOURCES = ['StepStone', 'XING', 'LinkedIn', 'Arbeitsagentur', 'EURES', 'englishjobs.de', 'HeyJobs', 'kimeta', 'Monster.de', 'Glassdoor',
+  'Welcome to the Jungle', 'Business France (VIE)', 'Business France (veille)', 'Engagement Jeunes', 'Connexion-Emploi', 'CCFA Jobboerse',
+  'Personio', 'ATS', 'Indeed.de'];
 var URL_SOURCE = { 'StepStone': 'https://www.stepstone.de', 'XING': 'https://www.xing.com/jobs', 'LinkedIn': 'https://www.linkedin.com/jobs',
   'Arbeitsagentur': 'https://www.arbeitsagentur.de/jobsuche/', 'EURES': 'https://europa.eu/eures/portal/jv-se/home', 'englishjobs.de': 'https://www.englishjobs.de',
+  'HeyJobs': 'https://www.heyjobs.co/de-de', 'kimeta': 'https://www.kimeta.de', 'Monster.de': 'https://www.monster.de', 'Glassdoor': 'https://www.glassdoor.de/Job/index.htm',
+  'Welcome to the Jungle': 'https://www.welcometothejungle.com/fr/jobs?refinementList%5Boffices.country_code%5D%5B%5D=DE',
   'Business France (VIE)': 'https://mon-vie-via.businessfrance.fr/offres', 'Business France (veille)': 'https://mon-vie-via.businessfrance.fr/offres',
   'Engagement Jeunes': 'https://www.engagement-jeunes.com/fr/offres-emploi.html', 'Connexion-Emploi': 'https://www.connexion-emploi.com/fr/offres-emploi-franco-allemandes',
-  'Indeed.de': 'https://de.indeed.com', 'Personio': 'https://www.personio.com' };
+  'CCFA Jobboerse': 'https://cci22.tzportal.io/fr/jobs', 'Indeed.de': 'https://de.indeed.com', 'Personio': 'https://www.personio.com' };
 var LIB_ETAT_SOURCE = { ok: 'lue', zero: '0 annonce', bloquee: 'bloquee', ecartee: 'ecartee', absente: 'absente', baisse: 'en baisse' };
 function celluleSource(e) {
   if (!e) return '<td style="color:var(--ink-3)">pas pour ce profil</td>';
