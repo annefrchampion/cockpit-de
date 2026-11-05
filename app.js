@@ -1042,9 +1042,24 @@ function chargerDonnees() {
     charger('data/taches_seed.json').catch(function () { return []; }),
     charger('data/decisions_seed.json').catch(function () { return { offres: {}, taches: {}, tachesSupprimees: [] }; }),
     charger('data/meta.json').catch(function () { return {}; }),
+    charger('data/sante.json').catch(function () { return null; }),
   ]).then(function (r) {
-    DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3];
+    DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3]; DATA.sante = r[4];
   });
+}
+// Sante des sources (05/11, sante_sources.py) : chaque site a-t-il ete lu au dernier scan ?
+function texteSante() {
+  var s = DATA.sante;
+  if (!s || !s.pannes) return '';
+  if (!s.pannes.length) return ' &middot; <span style="color:var(--ok)">' + (s.total || 0) + ' sources lues</span>';
+  var noms = [], grave = false;
+  s.pannes.forEach(function (p) {
+    if (noms.indexOf(p.source) === -1) noms.push(p.source);
+    if (p.etat !== 'baisse') grave = true;
+  });
+  var liste = noms.slice(0, 4).join(', ') + (noms.length > 4 ? ' +' + (noms.length - 4) : '');
+  return ' &middot; <span style="color:var(--' + (grave ? 'stop' : 'warn') + ')">' + noms.length
+    + (noms.length > 1 ? ' sources en panne : ' : ' source en panne : ') + esc(liste) + '</span>';
 }
 // Nouvelles offres sur la periode (meta.nouveaux24h / nouveaux7j, par profil), selon le filtre Anne / Joffrey.
 function nbNouveaux(cle) {
@@ -1057,7 +1072,8 @@ function majScanMeta() {
   var nJ = DATA.offres.length - nA;
   $('scan-meta').innerHTML = 'dernier scan <span class="mono">' + esc(m.genere || '?')
     + (m.publie ? ' ' + esc(String(m.publie).slice(11, 16)) : '') + '</span>'
-    + ' &middot; Anne ' + nA + ', Joffrey ' + nJ + ' &middot; <b>' + nbNouveaux('nouveaux7j') + '</b> nouvelles sur 7 jours';
+    + ' &middot; Anne ' + nA + ', Joffrey ' + nJ + ' &middot; <b>' + nbNouveaux('nouveaux7j') + '</b> nouvelles sur 7 jours'
+    + texteSante();
 }
 // Le cockpit vit : toutes les 5 minutes, page visible, si meta.publie a change les donnees du scan
 // sont rechargees et refusionnees. PENDING et SHEET ne bougent pas, la vue, les filtres et la

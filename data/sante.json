@@ -1,0 +1,504 @@
+{
+ "date": "2026-11-05 11:27:33",
+ "total": 50,
+ "ok": 47,
+ "pannes": [
+  {
+   "source": "Business France (VIE)",
+   "profil": "Anne",
+   "etat": "zero",
+   "detail": "0 vues, 1 requete(s)"
+  },
+  {
+   "source": "Indeed.de",
+   "profil": "Anne",
+   "etat": "bloquee",
+   "detail": "mur anti-robot"
+  },
+  {
+   "source": "Indeed.de",
+   "profil": "Joffrey",
+   "etat": "bloquee",
+   "detail": "mur anti-robot"
+  }
+ ],
+ "sources": [
+  {
+   "source": "ATS",
+   "profil": "Anne",
+   "vues": 7500,
+   "retenues": 5,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "flux vivants {\"smartrecruiters\":16,\"lever\":8,\"recruitee\":2,\"greenhouse\":5,\"workday\":4,\"sitesCarriere\":20}"
+  },
+  {
+   "source": "ATS",
+   "profil": "Joffrey",
+   "vues": 7500,
+   "retenues": 37,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "cache, 33 flux"
+  },
+  {
+   "source": "ATS greenhouse",
+   "profil": "Anne",
+   "vues": 5,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "5 flux vivants"
+  },
+  {
+   "source": "ATS lever",
+   "profil": "Anne",
+   "vues": 8,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "8 flux vivants"
+  },
+  {
+   "source": "ATS recruitee",
+   "profil": "Anne",
+   "vues": 2,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "2 flux vivants"
+  },
+  {
+   "source": "ATS smartrecruiters",
+   "profil": "Anne",
+   "vues": 16,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "16 flux vivants"
+  },
+  {
+   "source": "Arbeitsagentur",
+   "profil": "Anne",
+   "vues": 682,
+   "retenues": 355,
+   "duree_s": 54,
+   "etat": "ok",
+   "detail": "36 requete(s)"
+  },
+  {
+   "source": "Arbeitsagentur",
+   "profil": "Joffrey",
+   "vues": 299,
+   "retenues": 128,
+   "duree_s": 39,
+   "etat": "ok",
+   "detail": "28 requete(s)"
+  },
+  {
+   "source": "Business France (VIE)",
+   "profil": "Anne",
+   "vues": 0,
+   "retenues": 0,
+   "duree_s": 28,
+   "etat": "zero",
+   "detail": "0 vues, 1 requete(s)"
+  },
+  {
+   "source": "Business France (VIE)",
+   "profil": "Joffrey",
+   "vues": 0,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ecartee",
+   "detail": "ecartee du profil Joffrey"
+  },
+  {
+   "source": "Business France (veille)",
+   "profil": "veille",
+   "vues": 56,
+   "retenues": 3,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "portail Business France"
+  },
+  {
+   "source": "Connexion-Emploi",
+   "profil": "Anne",
+   "vues": 200,
+   "retenues": 0,
+   "duree_s": 51,
+   "etat": "ok",
+   "detail": "1 requete(s)"
+  },
+  {
+   "source": "Connexion-Emploi",
+   "profil": "Joffrey",
+   "vues": 200,
+   "retenues": 0,
+   "duree_s": 55,
+   "etat": "ok",
+   "detail": "1 requete(s)"
+  },
+  {
+   "source": "EURES",
+   "profil": "Anne",
+   "vues": 0,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ecartee",
+   "detail": "ecartee du profil Anne"
+  },
+  {
+   "source": "EURES",
+   "profil": "Joffrey",
+   "vues": 660,
+   "retenues": 205,
+   "duree_s": 257,
+   "etat": "ok",
+   "detail": "19 requete(s)"
+  },
+  {
+   "source": "Engagement Jeunes",
+   "profil": "Anne",
+   "vues": 91,
+   "retenues": 0,
+   "duree_s": 180,
+   "etat": "ok",
+   "detail": "1 requete(s)"
+  },
+  {
+   "source": "Engagement Jeunes",
+   "profil": "Joffrey",
+   "vues": 0,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ecartee",
+   "detail": "ecartee du profil Joffrey"
+  },
+  {
+   "source": "Indeed.de",
+   "profil": "Anne",
+   "vues": 0,
+   "retenues": null,
+   "duree_s": 4,
+   "etat": "bloquee",
+   "detail": "mur anti-robot"
+  },
+  {
+   "source": "Indeed.de",
+   "profil": "Joffrey",
+   "vues": 0,
+   "retenues": null,
+   "duree_s": 4,
+   "etat": "bloquee",
+   "detail": "mur anti-robot"
+  },
+  {
+   "source": "LinkedIn",
+   "profil": "Anne",
+   "vues": 960,
+   "retenues": 383,
+   "duree_s": 233,
+   "etat": "ok",
+   "detail": "32 requete(s)"
+  },
+  {
+   "source": "LinkedIn",
+   "profil": "Joffrey",
+   "vues": 960,
+   "retenues": 157,
+   "duree_s": 220,
+   "etat": "ok",
+   "detail": "32 requete(s)"
+  },
+  {
+   "source": "Personio",
+   "profil": "Anne",
+   "vues": 800,
+   "retenues": 3,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "57 flux vivants"
+  },
+  {
+   "source": "Personio",
+   "profil": "Joffrey",
+   "vues": 800,
+   "retenues": 13,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "57 flux en cache"
+  },
+  {
+   "source": "Site carriere Allianz",
+   "profil": "Anne",
+   "vues": 225,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Alstom",
+   "profil": "Anne",
+   "vues": 40,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Arval",
+   "profil": "Anne",
+   "vues": 5,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere BNP Paribas",
+   "profil": "Anne",
+   "vues": 113,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Bosch",
+   "profil": "Anne",
+   "vues": 760,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Diehl",
+   "profil": "Anne",
+   "vues": 516,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere ENGIE",
+   "profil": "Anne",
+   "vues": 9,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Hensoldt",
+   "profil": "Anne",
+   "vues": 454,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere KNDS",
+   "profil": "Anne",
+   "vues": 300,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Munich Re",
+   "profil": "Anne",
+   "vues": 1377,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Nordex",
+   "profil": "Anne",
+   "vues": 160,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Rheinmetall",
+   "profil": "Anne",
+   "vues": 1051,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Safran",
+   "profil": "Anne",
+   "vues": 75,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Schneider Electric",
+   "profil": "Anne",
+   "vues": 94,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Siemens",
+   "profil": "Anne",
+   "vues": 378,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Siemens Energy",
+   "profil": "Anne",
+   "vues": 194,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Societe Generale",
+   "profil": "Anne",
+   "vues": 31,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere TotalEnergies",
+   "profil": "Anne",
+   "vues": 43,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere Transdev",
+   "profil": "Anne",
+   "vues": 146,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "Site carriere UniCredit",
+   "profil": "Anne",
+   "vues": 118,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": ""
+  },
+  {
+   "source": "StepStone",
+   "profil": "Anne",
+   "vues": 1719,
+   "retenues": 259,
+   "duree_s": 1141,
+   "etat": "ok",
+   "detail": "76 requete(s)"
+  },
+  {
+   "source": "StepStone",
+   "profil": "Joffrey",
+   "vues": 2017,
+   "retenues": 275,
+   "duree_s": 1335,
+   "etat": "ok",
+   "detail": "96 requete(s)"
+  },
+  {
+   "source": "Workday Airbus",
+   "profil": "Anne",
+   "vues": 474,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "474 fiches lues"
+  },
+  {
+   "source": "Workday MBDA",
+   "profil": "Anne",
+   "vues": 157,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "157 fiches lues"
+  },
+  {
+   "source": "Workday Thales",
+   "profil": "Anne",
+   "vues": 85,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "85 fiches lues"
+  },
+  {
+   "source": "Workday Valeo",
+   "profil": "Anne",
+   "vues": 39,
+   "retenues": null,
+   "duree_s": null,
+   "etat": "ok",
+   "detail": "39 fiches lues"
+  },
+  {
+   "source": "XING",
+   "profil": "Anne",
+   "vues": 1539,
+   "retenues": 341,
+   "duree_s": 851,
+   "etat": "ok",
+   "detail": "76 requete(s)"
+  },
+  {
+   "source": "XING",
+   "profil": "Joffrey",
+   "vues": 1855,
+   "retenues": 274,
+   "duree_s": 980,
+   "etat": "ok",
+   "detail": "96 requete(s)"
+  },
+  {
+   "source": "englishjobs.de",
+   "profil": "Anne",
+   "vues": 650,
+   "retenues": 6,
+   "duree_s": 457,
+   "etat": "ok",
+   "detail": "4 requete(s)"
+  },
+  {
+   "source": "englishjobs.de",
+   "profil": "Joffrey",
+   "vues": 650,
+   "retenues": 5,
+   "duree_s": 369,
+   "etat": "ok",
+   "detail": "4 requete(s)"
+  }
+ ]
+}
