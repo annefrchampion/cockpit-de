@@ -886,6 +886,7 @@ function rendre() {
   $('n-taches').textContent = TACHES.filter(tacheActive).length;
   refleterFiltres();
   majScanMeta();
+  rendreSources();
   sauverUI();
   rendreAujourdhui();
   rendreTrier();
@@ -1046,6 +1047,48 @@ function chargerDonnees() {
   ]).then(function (r) {
     DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3]; DATA.sante = r[4];
   });
+}
+// Liste des sources (05/11, Anne : « dresse la liste de tous les sites que tu scrappes pour la publier sur le cockpit »).
+// Une ligne par source, une colonne par profil, depuis data/sante.json (sante_sources.py, a chaque scan complet).
+var ORDRE_SOURCES = ['StepStone', 'XING', 'LinkedIn', 'Arbeitsagentur', 'EURES', 'englishjobs.de', 'Business France (VIE)', 'Business France (veille)',
+  'Engagement Jeunes', 'Connexion-Emploi', 'Personio', 'ATS', 'Indeed.de'];
+var URL_SOURCE = { 'StepStone': 'https://www.stepstone.de', 'XING': 'https://www.xing.com/jobs', 'LinkedIn': 'https://www.linkedin.com/jobs',
+  'Arbeitsagentur': 'https://www.arbeitsagentur.de/jobsuche/', 'EURES': 'https://europa.eu/eures/portal/jv-se/home', 'englishjobs.de': 'https://www.englishjobs.de',
+  'Business France (VIE)': 'https://mon-vie-via.businessfrance.fr/offres', 'Business France (veille)': 'https://mon-vie-via.businessfrance.fr/offres',
+  'Engagement Jeunes': 'https://www.engagement-jeunes.com/fr/offres-emploi.html', 'Connexion-Emploi': 'https://www.connexion-emploi.com/fr/offres-emploi-franco-allemandes',
+  'Indeed.de': 'https://de.indeed.com', 'Personio': 'https://www.personio.com' };
+var LIB_ETAT_SOURCE = { ok: 'lue', zero: '0 annonce', bloquee: 'bloquee', ecartee: 'ecartee', absente: 'absente', baisse: 'en baisse' };
+function celluleSource(e) {
+  if (!e) return '<td style="color:var(--ink-3)">pas pour ce profil</td>';
+  var coul = e.etat === 'ok' ? 'var(--ok)' : e.etat === 'ecartee' ? 'var(--ink-3)' : 'var(--warn)';
+  var chiffres = e.etat === 'ecartee' || e.vues == null ? '' : ' <span class="mono">' + e.vues + (e.retenues != null ? ' &rarr; ' + e.retenues : '') + '</span>';
+  var det = e.detail && e.etat !== 'ok' ? '<div style="color:var(--ink-3);font-size:11px">' + esc(e.detail) + '</div>' : '';
+  return '<td><b style="color:' + coul + '">' + (LIB_ETAT_SOURCE[e.etat] || esc(e.etat || '?')) + '</b>' + chiffres + det + '</td>';
+}
+function rendreSources() {
+  var el = $('sources'), s = DATA.sante;
+  if (!el) return;
+  if (!s || !s.sources || !s.sources.length) { el.innerHTML = '<p>sante des sources pas encore publiee</p>'; return; }
+  var par = {};
+  s.sources.forEach(function (e) { (par[e.source] = par[e.source] || {})[e.profil] = e; });
+  var noms = Object.keys(par).sort(function (a, b) {
+    var ia = ORDRE_SOURCES.indexOf(a), ib = ORDRE_SOURCES.indexOf(b);
+    if (ia === -1) ia = 99; if (ib === -1) ib = 99;
+    return ia - ib || a.localeCompare(b);
+  });
+  var estFlux = function (n) { return /^(Site carriere |Workday |ATS )/.test(n); };
+  function ligne(n) {
+    var u = URL_SOURCE[n], p = par[n];
+    return '<tr><td>' + (u ? '<a href="' + u + '" target="_blank" rel="noopener">' + esc(n) + '</a>' : esc(n)) + '</td>'
+      + celluleSource(p.Anne || p.veille) + celluleSource(p.Joffrey) + '</tr>';
+  }
+  var tete = '<thead><tr><th>Source</th><th>Anne (vues &rarr; retenues)</th><th>Joffrey (vues &rarr; retenues)</th></tr></thead>';
+  var principales = noms.filter(function (n) { return !estFlux(n); }), flux = noms.filter(estFlux);
+  el.innerHTML = '<div class="cmd-wrap"><table class="cmd-table">' + tete + '<tbody>' + principales.map(ligne).join('') + '</tbody></table></div>'
+    + (flux.length ? '<details style="margin-top:8px"><summary style="cursor:pointer;font-size:13px;color:var(--ink-2)">Flux ATS, Workday et sites carriere lus un par un (' + flux.length + ')</summary>'
+      + '<div class="cmd-wrap"><table class="cmd-table">' + tete + '<tbody>' + flux.map(ligne).join('') + '</tbody></table></div></details>' : '')
+    + '<p style="margin-top:8px">Scan du <span class="mono">' + esc(String(s.date || '?').slice(0, 16)) + '</span> : ' + (s.ok || 0) + ' lues sur ' + (s.total || 0)
+    + (s.pannes && s.pannes.length ? ', en panne : ' + esc(s.pannes.map(function (x) { return x.source + ' (' + x.profil + ')'; }).join(', ')) : ', aucune panne') + '.</p>';
 }
 // Sante des sources (05/11, sante_sources.py) : chaque site a-t-il ete lu au dernier scan ?
 function texteSante() {

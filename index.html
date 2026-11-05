@@ -155,7 +155,9 @@
 
     <div class="cmd-section">
       <h3><span class="etape">1</span>Scanner les offres</h3>
-      <p>13 plateformes : StepStone, Indeed, LinkedIn, XING, EURES, Business France, Personio, ATS (Greenhouse, Lever, SmartRecruiters, Recruitee), Engagement Jeunes, Connexion-Emploi, Workday (Valeo).</p>
+      <p>Chaque site est relu a chaque scan complet (7h). Le tableau vient du dernier scan : annonces vues puis retenues apres les couperets (ville, langue, contrat), et l etat de lecture. Indeed retire le 05/11 (pare-feu anti-robot).</p>
+      <div id="sources"><p>sante des sources pas encore publiee</p></div>
+      <p style="margin-top:10px">A l etude (05/11), pas encore lues : join.com, Softgarden, d.vinci, SAP SuccessFactors, Onlyfy (familles d ATS, un adaptateur = des centaines d entreprises, comme Personio) ; Welcome to the Jungle et JobTeaser ICN (groupes francais, V.I.E.) ; Jobboerse franco-allemande CCFA ; Glassdoor (adaptateur ecrit, jamais branche) ; kimeta, Monster.de, HeyJobs (agregateurs, beaucoup de doublons avec StepStone).</p>
       <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
         <tr><td class="cmd-cell"><code>/vie-scan</code></td><td>Lance le scan complet Anne + Joffrey, attend la fin, rebuild le cockpit et le publie. Un seul /goal = tout tourne sans interruption.</td><td class="quand">Lundi matin + ponctuel</td></tr>
       </tbody></table></div>
@@ -220,6 +222,6 @@
 </div>
 <div class="flash" id="flash"></div>
 <script src="config.js?v=20260926b"></script>
-<script src="app.js?v=20261105"></script>
+<script src="app.js?v=20261105b"></script>
 </body>
 </html>
