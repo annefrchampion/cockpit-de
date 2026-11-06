@@ -513,3 +513,10 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);color:v
 .j-qui{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--info);white-space:nowrap}
 .j-act{font-weight:600}
 .j-det{color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
+
+/* Taches finies (06/11) : repliees sous la categorie, archives derriere un bouton */
+details.t-finies{margin:6px 0 2px}
+details.t-finies>summary{cursor:pointer;font-size:12px;color:var(--ink-3);padding:6px 4px;list-style:none}
+details.t-finies>summary::before{content:'\25B8  ';font-size:10px}
+details.t-finies[open]>summary::before{content:'\25BE  '}
+details.t-finies .tache{opacity:.8}

@@ -617,24 +617,40 @@ function carteTache(t) {
     + '</div></div></article>';
 }
 
+// Rien n est supprime (l historique reste dans la feuille Google), mais une tache finie quitte la vue : les 3 derniers
+// jours restent depliables sous la categorie, le reste est archive derriere un seul bouton (06/11, Anne : « une fois que
+// tout est coche, on supprime rien ? ca fait beaucoup de taches »).
+var archivesOuvertes = false;
 function rendreTaches() {
   var zone = $('vue-taches');
   var groupes = {};
   TACHES.forEach(function (t) { (groupes[t.cat] = groupes[t.cat] || []).push(t); });
-  var html = '';
+  var html = '', archives = [];
+  var recent = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 10);
   Object.keys(LIB_CAT).forEach(function (cat) {
-    var lot = (groupes[cat] || []).slice().sort(function (a, b) {
-      if (tacheActive(a) !== tacheActive(b)) return tacheActive(a) ? -1 : 1;
-      return (a.date || '9999').localeCompare(b.date || '9999');
-    });
+    var lot = (groupes[cat] || []).slice().sort(function (a, b) { return (a.date || '9999').localeCompare(b.date || '9999'); });
+    var actives = lot.filter(tacheActive);
+    var finies = lot.filter(function (t) { return !tacheActive(t); })
+      .sort(function (a, b) { return (b.maj || '').localeCompare(a.maj || ''); });
+    var recentes = finies.filter(function (t) { return (t.maj || '') >= recent; });
+    archives = archives.concat(finies.filter(function (t) { return (t.maj || '') < recent; }));
     html += '<section class="grp"><div class="grp-head"><span class="grp-nom">' + esc(LIB_CAT[cat]) + '</span>'
-      + '<span class="grp-n">' + lot.filter(tacheActive).length + ' a faire sur ' + lot.length + '</span>'
+      + '<span class="grp-n">' + actives.length + ' a faire' + (finies.length ? ', ' + finies.length + ' finie' + (finies.length > 1 ? 's' : '') : '') + '</span>'
       + '<button class="btn mini t-ajout" data-cat="' + cat + '">+ tache</button></div>'
       + '<form class="t-form" data-cat="' + cat + '" hidden><input type="text" name="texte" placeholder="Nouvelle tache" required>'
       + '<input type="date" name="date"><button class="btn plein" type="submit">Ajouter</button></form>'
-      + (lot.length ? lot.map(carteTache).join('') : '<div class="vide">Rien dans cette categorie.</div>')
+      + (actives.length ? actives.map(carteTache).join('') : '<div class="vide">Rien a faire dans cette categorie.</div>')
+      + (recentes.length ? '<details class="t-finies"><summary>' + recentes.length + ' finie' + (recentes.length > 1 ? 's' : '') + ' ces 3 derniers jours</summary>'
+        + recentes.map(carteTache).join('') + '</details>' : '')
       + '</section>';
   });
+  if (archives.length) {
+    archives.sort(function (a, b) { return (b.maj || '').localeCompare(a.maj || ''); });
+    html += '<section class="grp"><div class="grp-head"><span class="grp-nom">Archives</span>'
+      + '<span class="grp-n">' + archives.length + ' tache' + (archives.length > 1 ? 's' : '') + ' finie' + (archives.length > 1 ? 's' : '') + ' il y a plus de 3 jours, rien n est supprime</span>'
+      + '<button class="btn mini" id="t-archives">' + (archivesOuvertes ? 'masquer' : 'voir') + '</button></div>'
+      + (archivesOuvertes ? archives.map(carteTache).join('') : '') + '</section>';
+  }
   zone.innerHTML = html;
 }
 
@@ -959,6 +975,7 @@ document.addEventListener('click', function (e) {
     else window.getSelection().selectAllChildren(code);
     return;
   }
+  if (q('#t-archives')) { archivesOuvertes = !archivesOuvertes; rendreTaches(); return; }
   if ((el = q('.t-ajout'))) {
     var f = el.closest('.grp').querySelector('.t-form');
     f.hidden = !f.hidden;
@@ -1005,7 +1022,7 @@ document.addEventListener('change', function (e) {
   if ((el = q('.t-statut'))) { deciderTache(el.dataset.id, { statut: el.value }); return; }
   if ((el = q('.t-date'))) { deciderTache(el.dataset.id, { date: el.value }); return; }
   if ((el = q('.t-note'))) { deciderTache(el.dataset.id, { notes: el.value }); return; }
-  if ((el = q('.t-rep'))) { annoterTache(el.dataset.id, el.value); return; }
+  if ((el = q('.t-rep'))) { annoterTache(el.dataset.id, el.value, true); return; }  // deja sauve a chaque frappe ; le rendu vient au focusout
   if ((el = q('.o-pick'))) { if (el.checked) selection[el.dataset.id] = 1; else delete selection[el.dataset.id]; rendre(); return; }
   if (t.id === 'sel-statut') { deciderLot('statut', t.value); return; }
   if (t.id === 'sel-qui') { deciderLot('qui', t.value); return; }
