@@ -639,6 +639,20 @@ function rendreTaches() {
 }
 
 // ------------------------------------------------------------- aujourd hui
+// Fil d'activite (06/11, journal.py) : ce que le moteur, le passage Claude, le scan et Telegram ont fait, 48 h glissantes.
+var LIB_QUI = { moteur: 'moteur', claude: 'Claude', scan: 'scan', telegram: 'Telegram' };
+function blocJournal() {
+  var j = (DATA.journal || []).slice().reverse();
+  var limite = Date.now() - 48 * 3600000;
+  j = j.filter(function (e) { return e && e.ts && new Date(String(e.ts).replace(' ', 'T')) >= limite; });
+  var corps = j.length ? '<div class="journal">' + j.slice(0, 40).map(function (e) {
+    return '<div class="j-ligne"><span class="mono j-ts">' + esc(String(e.ts).slice(5, 16).replace('T', ' ')) + '</span>'
+      + '<span class="j-qui">' + esc(LIB_QUI[e.qui] || e.qui || '') + '</span>'
+      + '<span class="j-act">' + esc(e.action || '') + '</span>'
+      + (e.detail ? '<span class="j-det">' + esc(String(e.detail).slice(0, 140)) + '</span>' : '') + '</div>';
+  }).join('') + '</div>' : '<div class="vide">Aucune action enregistree sur 48 h.</div>';
+  return '<section class="bloc"><h3>Ce que le moteur a fait <span class="sous">48 dernieres heures, du plus recent au plus ancien</span></h3>' + corps + '</section>';
+}
 function rendreAujourdhui() {
   var zone = $('vue-aujourdhui');
   var retard = TACHES.filter(enRetard), proche = TACHES.filter(bientot);
@@ -683,6 +697,7 @@ function rendreAujourdhui() {
   if (urg.length) html += bloc('Annonces qui ferment', pluriel(urg.length, 'offre'), urg.slice(0, 6).map(carte).join(''), 'rouge');
   var rel = OFFRES.filter(function (o) { return aRelancer(o) && passeQui(o); });
   if (rel.length) html += bloc('A relancer', pluriel(rel.length, 'candidature'), rel.slice(0, 6).map(carte).join(''), 'ambre');
+  html += blocJournal();
   zone.innerHTML = html || '<div class="vide grand">Rien d urgent aujourd hui. Passe a l onglet Trier.</div>';
 }
 
@@ -876,8 +891,22 @@ function refleterFiltres() {
     b.setAttribute('aria-pressed', b.dataset.val === filtres[g] ? 'true' : 'false');
   });
 }
+// Anne ecrit (annotation de tache, note d offre, recherche) : aucune reconstruction de la page sous ses doigts.
+// Le rafraichissement (flush, rafraichir, fraicheur) est garde en attente et joue quand elle quitte le champ (06/11 :
+// « le curseur s enleve, je n ecris plus et la page bouge toute seule »).
+var renduEnAttente = false;
+function champActif() {
+  var a = document.activeElement;
+  return !!(a && a.closest && a.closest('.app') && (a.tagName === 'TEXTAREA' || (a.tagName === 'INPUT' && /^(text|search|url)$/.test(a.type || 'text'))));
+}
+document.addEventListener('focusout', function () {
+  if (!renduEnAttente) return;
+  setTimeout(function () { if (renduEnAttente && !champActif()) rendre(); }, 200);
+});
 function rendre() {
   if (!chargeOK) return;
+  if (champActif()) { renduEnAttente = true; return; }
+  renduEnAttente = false;
   ['aujourdhui', 'trier', 'taches', 'offres', 'commandes'].forEach(function (v) { $('vue-' + v).hidden = v !== vue; });
   document.querySelectorAll('.nav button').forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.vue === vue ? 'true' : 'false'); });
   var nRetard = TACHES.filter(enRetard).length, nProche = TACHES.filter(bientot).length;
@@ -1044,8 +1073,9 @@ function chargerDonnees() {
     charger('data/decisions_seed.json').catch(function () { return { offres: {}, taches: {}, tachesSupprimees: [] }; }),
     charger('data/meta.json').catch(function () { return {}; }),
     charger('data/sante.json').catch(function () { return null; }),
+    charger('data/journal.json').catch(function () { return []; }),
   ]).then(function (r) {
-    DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3]; DATA.sante = r[4];
+    DATA.offres = r[0]; DATA.tachesSeed = r[1]; DATA.seed = r[2]; DATA.meta = r[3]; DATA.sante = r[4]; DATA.journal = r[5] || [];
   });
 }
 // Liste des sources (05/11, Anne : « dresse la liste de tous les sites que tu scrappes pour la publier sur le cockpit »).
@@ -1093,6 +1123,20 @@ function rendreSources() {
     + '<p style="margin-top:8px">Scan du <span class="mono">' + esc(String(s.date || '?').slice(0, 16)) + '</span> : ' + (s.ok || 0) + ' lues sur ' + (s.total || 0)
     + (s.pannes && s.pannes.length ? ', en panne : ' + esc(s.pannes.map(function (x) { return x.source + ' (' + x.profil + ')'; }).join(', ')) : ', aucune panne') + '.</p>';
 }
+// Battement du moteur horaire (06/11) : meta.moteur = dernier passage de moteur.py quotidien. En heures de bureau, un
+// passage vieux de plus de 2 h 15 = le moteur ne tourne pas, et Anne doit le voir sans ouvrir un journal.
+function texteMoteur() {
+  var mo = DATA.meta && DATA.meta.moteur;
+  if (!mo || !mo.fin) return ' &middot; <span style="color:var(--warn)">moteur : aucun passage</span>';
+  var fin = new Date(String(mo.fin).replace(' ', 'T')), now = new Date();
+  var age = (now - fin) / 60000, h = now.getHours(), jour = now.getDay();
+  var bureau = jour >= 1 && jour <= 5 && h >= 8 && h < 20;
+  var tard = bureau && age > 135;
+  var det = (mo.validations ? ', ' + mo.validations + ' case(s) lue(s)' : '') + (mo.envoyes ? ', ' + mo.envoyes + ' envoi(s)' : '')
+    + (mo.aTraiter ? ', ' + mo.aTraiter + ' pour Claude' : '');
+  return ' &middot; <span style="color:' + (tard ? 'var(--warn)' : 'var(--ok)') + '" title="dernier passage du moteur horaire' + esc(det) + '">moteur '
+    + esc(String(mo.fin).slice(11, 16)) + (tard ? ' (en retard)' : '') + '</span>';
+}
 // Sante des sources (05/11, sante_sources.py) : chaque site a-t-il ete lu au dernier scan ?
 function texteSante() {
   var s = DATA.sante;
@@ -1119,7 +1163,7 @@ function majScanMeta() {
   $('scan-meta').innerHTML = 'dernier scan <span class="mono">' + esc(m.genere || '?')
     + (m.publie ? ' ' + esc(String(m.publie).slice(11, 16)) : '') + '</span>'
     + ' &middot; Anne ' + nA + ', Joffrey ' + nJ + ' &middot; <b>' + nbNouveaux('nouveaux7j') + '</b> nouvelles sur 7 jours'
-    + texteSante();
+    + texteSante() + texteMoteur();
 }
 // Le cockpit vit : toutes les 5 minutes, page visible, si meta.publie a change les donnees du scan
 // sont rechargees et refusionnees. PENDING et SHEET ne bougent pas, la vue, les filtres et la

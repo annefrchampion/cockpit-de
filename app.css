@@ -504,3 +504,12 @@ footer{margin-top:38px;padding-top:18px;border-top:1px solid var(--line);color:v
 .skeleton{height:120px;border-radius:var(--r-l);background:linear-gradient(90deg,var(--surface-2),var(--surface),var(--surface-2));
   background-size:200% 100%;animation:sk 1.2s linear infinite}
 @keyframes sk{to{background-position:-200% 0}}
+
+/* Fil d activite du moteur (06/11, journal.py), onglet Aujourd hui */
+.journal{display:flex;flex-direction:column;gap:4px}
+.j-ligne{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline;font-size:12.5px;line-height:1.45;padding:5px 8px;border-radius:6px}
+.j-ligne:hover{background:var(--surface-2)}
+.j-ts{color:var(--ink-3);font-size:11px;white-space:nowrap}
+.j-qui{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;font-weight:700;color:var(--info);white-space:nowrap}
+.j-act{font-weight:600}
+.j-det{color:var(--ink-2);min-width:0;overflow-wrap:anywhere}
