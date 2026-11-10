@@ -1,0 +1,4 @@
+_*.txt
+_*.log
+data/entreprises.json
+data/offres.json

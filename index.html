@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cockpit Allemagne</title>
+<meta name="description" content="Recherche d emploi Anne et Joffrey, quatre bassins allemands. Offres, tri, candidatures, taches.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="app.css?v=20261109b">
+</head>
+<body>
+<div class="app">
+
+<header class="top">
+  <div class="brand">
+    <div class="logo">AJ</div>
+    <div style="min-width:0">
+      <h1>Cockpit Allemagne</h1>
+      <div class="scan" id="scan-meta">chargement des offres</div>
+    </div>
+  </div>
+  <div class="moi">
+    <span class="moi-lbl">Je suis</span>
+    <div class="seg seg-moi" id="seg-moi">
+      <button data-moi="Anne" aria-pressed="false">Anne</button>
+      <button data-moi="Joffrey" aria-pressed="false">Joffrey</button>
+    </div>
+    <button class="btn-ico" id="btn-theme" title="Clair / sombre" aria-label="Changer le theme">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-1-.1-1.4A5.5 5.5 0 0 1 12 3z"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="bandeau" id="bandeau" hidden></div>
+
+<nav class="nav" id="nav">
+  <button data-vue="aujourdhui" aria-pressed="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    Aujourd hui<span class="pastille" id="n-urgent" hidden>0</span>
+  </button>
+  <button data-vue="trier" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+    Trier<span class="pastille bleue" id="n-trier" hidden>0</span>
+  </button>
+  <button data-vue="taches" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    Taches<span class="n" id="n-taches">0</span>
+  </button>
+  <button data-vue="offres" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg>
+    Offres
+  </button>
+  <button data-vue="commandes" aria-pressed="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l6-5-6-5M12 19h8"/></svg>
+    Machine VIE
+  </button>
+</nav>
+
+<main>
+  <section id="vue-aujourdhui" class="vue"><div class="skeleton"></div></section>
+
+  <section id="vue-trier" class="vue" hidden></section>
+
+  <section id="vue-taches" class="vue" hidden></section>
+
+  <section id="vue-offres" class="vue" hidden>
+    <div class="rail">
+      <div class="rail-head"><h2>Ou en est le pipeline</h2><span class="tot" id="rail-total">0 offre</span></div>
+      <div class="rail-bar">
+        <div class="rail-seg" data-c="tri" id="rail-tri"></div>
+        <div class="rail-seg" data-c="interessant" id="rail-interessant"></div>
+        <div class="rail-seg" data-c="postule" id="rail-postule"></div>
+        <div class="rail-seg" data-c="entretien" id="rail-entretien"></div>
+        <div class="rail-seg" data-c="fini" id="rail-fini"></div>
+      </div>
+      <div class="rail-leg">
+        <span><i style="background:var(--line-2)"></i>A trier <b class="mono" id="leg-tri">0</b></span>
+        <span><i style="background:var(--info)"></i>Interessant <b class="mono" id="leg-interessant">0</b></span>
+        <span><i style="background:var(--warn)"></i>Postule <b class="mono" id="leg-postule">0</b></span>
+        <span><i style="background:var(--ok)"></i>Entretien <b class="mono" id="leg-entretien">0</b></span>
+        <span><i style="background:var(--surface-3)"></i>Termine <b class="mono" id="leg-fini">0</b></span>
+      </div>
+    </div>
+
+    <div class="today">
+      <button class="tile t-tri" data-tuile="tri" aria-pressed="false"><span class="num" id="t-tri">0</span><span><span class="lbl">A trier</span><span class="sub">jamais regardees, il faut decider</span></span></button>
+      <button class="tile t-relance" data-tuile="relance" aria-pressed="false"><span class="num" id="t-relance">0</span><span><span class="lbl">A relancer</span><span class="sub">postulees il y a plus de 7 jours, sans nouvelles</span></span></button>
+      <button class="tile t-expire" data-tuile="expire" aria-pressed="false"><span class="num" id="t-expire">0</span><span><span class="lbl">Expire bientot</span><span class="sub">annonce fermee dans moins de 7 jours</span></span></button>
+    </div>
+
+    <div class="bar">
+      <div class="champ-q">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="q" placeholder="Entreprise, poste, ville, note..." autocomplete="off">
+      </div>
+      <div class="seg" data-groupe="qui">
+        <button data-val="tous" aria-pressed="true">Les deux</button>
+        <button data-val="Anne" aria-pressed="false">Anne</button>
+        <button data-val="Joffrey" aria-pressed="false">Joffrey</button>
+      </div>
+      <div class="seg" data-groupe="hub">
+        <button data-val="tous" aria-pressed="true">Toutes villes</button>
+        <button data-val="Munich" aria-pressed="false">Munich</button>
+        <button data-val="Francfort" aria-pressed="false">Francfort</button>
+        <button data-val="Berlin" aria-pressed="false">Berlin</button>
+        <button data-val="Hamburg" aria-pressed="false">Hambourg</button>
+      </div>
+      <div class="seg" data-groupe="contrat">
+        <button data-val="tous" aria-pressed="true">Tout contrat</button>
+        <button data-val="VIE" aria-pressed="false">VIE</button>
+        <button data-val="CDI" aria-pressed="false">CDI</button>
+        <button data-val="CDD" aria-pressed="false">CDD</button>
+        <button data-val="VIE proposable" aria-pressed="false">VIE proposable</button>
+      </div>
+      <button class="btn" id="btn-ajout" title="Une offre venue du reseau, d un mail, d un portail que le scanner ne lit pas">+ Ajouter une offre</button>
+      <button class="btn" id="btn-csv" title="Exporter la liste affichee">Export CSV</button>
+    </div>
+
+    <form class="ajout-form" id="ajout-form" hidden>
+      <input name="entreprise" placeholder="Entreprise *" required autocomplete="off">
+      <input name="poste" placeholder="Intitule du poste *" required autocomplete="off">
+      <input name="url" type="url" placeholder="Lien de l annonce" autocomplete="off">
+      <input name="ville" placeholder="Ville" autocomplete="off">
+      <select name="contrat"><option value="">Contrat</option><option>VIE</option><option>CDD</option><option>CDI</option><option>Interim</option></select>
+      <select name="qui"><option>Anne</option><option>Joffrey</option></select>
+      <p class="ajout-aide">Interessant = Claude lit l annonce et prepare le dossier (offre d Anne). Sans lien, il te demande l annonce dans la note de l offre.</p>
+      <div class="ajout-actions"><button class="btn plein" type="submit">Ajouter dans Interessant</button><button class="btn" type="button" id="ajout-annuler">Annuler</button></div>
+    </form>
+
+    <div class="barre-sel" id="barre-sel" hidden>
+      <span class="n-sel" id="n-sel">0 selectionnee</span>
+      <label for="sel-statut">Etape</label>
+      <select id="sel-statut"><option value="">changer pour...</option></select>
+      <label for="sel-qui">Pour</label>
+      <select id="sel-qui"><option value="">affecter a...</option><option>Anne</option><option>Joffrey</option></select>
+      <button class="btn" id="sel-tout">Tout selectionner</button>
+      <button class="btn" id="sel-rien">Annuler</button>
+    </div>
+
+    <div class="col-picker" id="col-picker"></div>
+
+    <div class="board" id="board">
+      <section class="col" data-col="tri"><div class="col-head"><span class="dot"></span><span class="nom">A trier</span><span class="n" id="n-tri">0</span></div><div class="col-body" id="col-tri"></div></section>
+      <section class="col" data-col="interessant"><div class="col-head"><span class="dot"></span><span class="nom">Interessant</span><span class="n" id="n-interessant">0</span></div><div class="col-body" id="col-interessant"></div></section>
+      <section class="col" data-col="postule"><div class="col-head"><span class="dot"></span><span class="nom">Postule</span><span class="n" id="n-postule">0</span></div><div class="col-body" id="col-postule"></div></section>
+      <section class="col" data-col="entretien"><div class="col-head"><span class="dot"></span><span class="nom">Entretien</span><span class="n" id="n-entretien">0</span></div><div class="col-body" id="col-entretien"></div></section>
+      <section class="col" data-col="fini"><div class="col-head"><span class="dot"></span><span class="nom">Termine</span><span class="n" id="n-fini">0</span></div><div class="col-body" id="col-fini"></div></section>
+    </div>
+  </section>
+
+  <section id="vue-commandes" class="vue" hidden>
+    <p class="cmd-intro">Le moteur tourne seul : scan complet chaque jour a 7h, veille Business France a 7h30, moteur chaque heure de 8h a 19h (il lit tes cases cochees et tes annotations), radar LinkedIn le lundi et le jeudi. Mise a jour 09/11/2026.</p>
+
+    <div class="cmd-section">
+      <h3>L arbre : ce que chaque geste declenche</h3>
+      <p>Tout ce que tu touches dans le cockpit declenche une suite (Anne, 08/11). Le moteur passe chaque heure de 8h a 19h, tous les jours (« moteur HH:MM » dans l en-tete), un passage Claude suit s il y a quelque chose a traiter, un Telegram part quand quelque chose te concerne, et le bloc « Ce que le moteur a fait » (onglet Aujourd hui) liste les actions.</p>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Ton geste</th><th>Ce que ca declenche</th><th>Ou tu le vois</th></tr></thead><tbody>
+        <tr><td class="geste">Offre passee <b>Interessant</b></td><td>Claude lit l annonce et prepare le dossier (CV adapte aux mots-cles, lettre, reco), puis pose la tache « Dossier pret : cocher = envoie », ou depose directement s il est sur (porte du depot : aucune question ouverte).</td><td class="ou">Taches, Candidatures ; note de l offre</td></tr>
+        <tr><td class="geste">Offre passee <b>Postule</b></td><td>Relance proposee automatiquement 7 jours plus tard : tache « Relance prete : cocher = envoyer ».</td><td class="ou">Taches</td></tr>
+        <tr><td class="geste">Offre passee <b>Entretien</b></td><td>Claude prepare l entretien : fichier _ENTRETIEN.md dans le dossier et tache « Prepa entretien ».</td><td class="ou">Taches ; CANDIDATURES\</td></tr>
+        <tr><td class="geste">Offre passee <b>Ecarte</b> avec un motif</td><td>Le motif reste dans la note de l offre.</td><td class="ou">Note de l offre</td></tr>
+        <tr><td class="geste">Offre passee <b>Lien mort</b></td><td>Rien de plus.</td><td class="ou"></td></tr>
+        <tr><td class="geste"><b>Note</b> ecrite dans une offre</td><td>Claude la lit au passage suivant comme une consigne ou une question et repond dans la note, precede de « @Claude date : ».</td><td class="ou">Carte de l offre, puce « lue par Claude »</td></tr>
+        <tr><td class="geste"><b>Tache cochee</b></td><td>li-... = envoi LinkedIn au passage suivant (3 invitations par jour, heures de bureau) ; mt-envoie-... = depot de la candidature ; « Postuler ? » = dossier ; toute autre tache = juste faite.</td><td class="ou">Taches, bloc @Claude ; Telegram</td></tr>
+        <tr><td class="geste"><b>Tache annotee</b> (« Ta reponse pour Claude »)</td><td>Claude lit avant d agir et repond dans la tache. Cocher ET annoter = il applique la modification puis agit.</td><td class="ou">Taches</td></tr>
+        <tr><td class="geste"><b>Tache creee</b> (« + tache »)</td><td>Claude la lit comme une consigne : si c est pour lui (postuler, relancer, ecrire, modifier le CV), il le fait et repond dans la tache ; si c est personnel, il n y touche pas.</td><td class="ou">Taches</td></tr>
+        <tr><td class="geste"><b>Offre ajoutee a la main</b> (« + Ajouter une offre »)</td><td>Interessant d office : Claude lit l annonce et prepare le dossier.</td><td class="ou">Offres, puis Taches</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">1</span>Scanner les offres</h3>
+      <p>Chaque site est relu a chaque scan complet (7h). Le tableau vient du dernier scan : annonces vues puis retenues apres les couperets (ville, langue, contrat), et l etat de lecture. Indeed retire le 05/11 (pare-feu anti-robot).</p>
+      <div id="sources"><p>sante des sources pas encore publiee</p></div>
+      <p style="margin-top:10px">Ajoutees le 05/11 au soir, lues des le scan du 06/11 : Welcome to the Jungle (1 113 offres en Allemagne au test, dont les V.I.E.), HeyJobs (API, 600 offres par profil, surtout en allemand), CCFA (mince), et quatre familles d ATS en HTTP pur : SAP SuccessFactors (69 sites carriere de grands groupes : BMW, BASF, Bayer, adidas, ZF, Fraport, DKB, Arthrex...), join.com (37 000 postes de PME et start-up, lus par tranches de 1 500 par jour, les plus recents d abord), Softgarden (59 entreprises), d.vinci (32 entreprises). Abandonnees, mur anti-robot ou page sans HTML : Monster, Glassdoor, JobTeaser, Onlyfy. kimeta livre mais inactif (son robots.txt interdit la recherche, ses annonces renvoient vers StepStone). Indeed retire.</p>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-goal</code></td><td>Lance le scan complet Anne + Joffrey, attend la fin, rebuild le cockpit et le publie. Un seul /goal = tout tourne sans interruption.</td><td class="quand">A la demande, le scan tourne seul chaque jour</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">2</span>Candidature</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-candidature</code></td><td>Pipeline complet de candidature : cree le dossier, analyse les keywords, build le CV adapte, genere le brouillon LM, ajoute au tracker.</td><td class="quand">Offre a postuler</td></tr>
+      </tbody></table></div>
+      <p>CV V2 (27/10/2026) : allege, 1 page, ATS-optimise, Centre d interets, outils IA. Base : <code class="mono">CANDIDATURES\_DOCUMENTS</code>. Jamais regeneree, toujours copiee et adaptee par offre.</p>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">3</span>Outreach et reseau</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-outreach</code></td><td>Cold outreach sur une entreprise cible : enrichit via SIRENE, trouve les emails RH, genere email froid + message LinkedIn 300 chars.</td><td class="quand">Entreprise cible sans offre visible</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-alumni</code></td><td>Activation reseau alumni ICN et Prytanee dans une entreprise cible en Allemagne. Cherche les anciens, redige le message.</td><td class="quand">Toute entreprise cible</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-relance</code></td><td>Identifie les candidatures a relancer dans le tracker, redige les messages LinkedIn/email de follow-up.</td><td class="quand">Candidature sans nouvelles depuis 10j+</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">4</span>LinkedIn (11 skills)</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/li-profile</code></td><td>Score ton profil LinkedIn /100 sur 12 criteres, reecrit les sections faibles</td></tr>
+        <tr><td class="cmd-cell"><code>/li-post</code></td><td>Redige un post LinkedIn avec 21 formules de hook, dans ton ton</td></tr>
+        <tr><td class="cmd-cell"><code>/li-comment</code></td><td>Commente le post de quelqu un (CPO, directeur achats cible)</td></tr>
+        <tr><td class="cmd-cell"><code>/li-dm</code></td><td>Note de connexion (200 chars), premier message, 2 follow-ups</td></tr>
+        <tr><td class="cmd-cell"><code>/li-plan</code></td><td>Plan de la semaine : quoi poster, quand, qui engager</td></tr>
+        <tr><td class="cmd-cell"><code>/li-human</code></td><td>Nettoie les marqueurs IA (tirets longs, slop words, watermarks)</td></tr>
+        <tr><td class="cmd-cell"><code>/li-reply</code></td><td>Trie et repond aux commentaires sous tes posts</td></tr>
+        <tr><td class="cmd-cell"><code>/li-carousel</code></td><td>Cree un post document/slides LinkedIn</td></tr>
+        <tr><td class="cmd-cell"><code>/li-repurpose</code></td><td>Transforme un contenu long en posts LinkedIn</td></tr>
+        <tr><td class="cmd-cell"><code>/li-inbox</code></td><td>Trie ta boite de reception LinkedIn (leads, recruteurs, spam)</td></tr>
+        <tr><td class="cmd-cell"><code>/li-audit</code></td><td>Analyse quels posts ont marche et pourquoi</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3><span class="etape">5</span>Preparation et pilotage</h3>
+      <div class="cmd-wrap"><table class="cmd-table"><thead><tr><th>Skill</th><th>Ce que ca fait</th><th>Quand</th></tr></thead><tbody>
+        <tr><td class="cmd-cell"><code>/vie-prep</code></td><td>Preparation entretien en 10 minutes : scrape le rapport annuel, les news, l organigramme achats, prepare les reponses STAR et les 5 questions a poser.</td><td class="quand">Entretien programme</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-status</code></td><td>Pulse hebdomadaire : lit le tracker + cockpit + rapports de scan, affiche les KPIs (candidatures, pipeline, taux conversion, outreach).</td><td class="quand">Point hebdo</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-allemagne</code></td><td>Projet VIE et recherche CDI en Allemagne. Messages LinkedIn, LM.</td><td class="quand">Pilotage general</td></tr>
+        <tr><td class="cmd-cell"><code>/vie-goal</code></td><td>Lance le scan complet Anne + Joffrey, attend la fin, rebuild le cockpit et le publie. Un seul /goal = tout tourne sans interruption. NE PAS invoquer sur candidature, outreach, relance.</td><td class="quand">Scan complet</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="cmd-section">
+      <h3>Donnees marche</h3>
+      <p>4 fichiers de recherche approfondie dans <code class="mono">C:\Users\afck2\VIE\</code> : VIE sans allemand, secteurs emergents DE, marche procurement DE, entreprises cibles VIE. Triangle d or : Sondervermogen 500Md infra + Zeitenwende 377Md defense + LkSG supply chain compliance.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Quatre bassins : Munich, Francfort, Berlin, Hambourg, et tout ce qui tient en 45 minutes de trajet. Une annonce entierement en allemand est ecartee pour Anne, gardee pour Joffrey. Une exigence d allemand natif ecarte pour les deux. En droit allemand une annonce muette sur la duree est un CDI.<br>
+  <span id="pied-sync"></span>
+</footer>
+
+</div>
+<div class="flash" id="flash"></div>
+<script src="config.js?v=20261110"></script>
+<script src="app.js?v=20261110b"></script>
+</body>
+</html>
