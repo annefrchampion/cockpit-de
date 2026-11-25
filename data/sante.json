@@ -1,10 +1,9 @@
 {
- "date": "2026-11-24 12:04:26",
+ "date": "2026-11-25 10:26:43",
  "total": 60,
- "ok": 60,
+ "ok": 59,
  "utiles": 27,
  "inutiles": [
-  "ATS dvinci Anne",
   "ATS lever Anne",
   "ATS recruitee Anne",
   "ATS softgarden Anne",
@@ -29,7 +28,6 @@
   "Site carriere Schneider Electric Anne",
   "Site carriere Siemens Anne",
   "Site carriere Siemens Energy Anne",
-  "Site carriere Societe Generale Anne",
   "Site carriere TotalEnergies Anne",
   "Site carriere Transdev Anne",
   "Site carriere UniCredit Anne",
@@ -38,56 +36,64 @@
   "Workday Thales Anne",
   "Workday Valeo Anne"
  ],
- "pannes": [],
+ "pannes": [
+  {
+   "source": "Site carriere Societe Generale",
+   "profil": "Anne",
+   "etat": "absente",
+   "detail": "vue pour la derniere fois au scan du 2026-11-24"
+  }
+ ],
  "sources": [
   {
    "source": "ATS",
    "profil": "Anne",
-   "vues": 31478,
-   "retenues": 10,
+   "vues": 29551,
+   "retenues": 9,
    "duree_s": null,
    "etat": "ok",
-   "detail": "flux vivants {\"smartrecruiters\":41,\"lever\":12,\"greenhouse\":72,\"recruitee\":31,\"workday\":4,\"sitesCarriere\":20,\"dvinci\":147,\"join\":2440,\"softgarden\":47,\"successfactors\":59}",
-   "gardees": 23
+   "detail": "flux vivants {\"smartrecruiters\":41,\"recruitee\":32,\"greenhouse\":73,\"lever\":12,\"workday\":4,\"sitesCarriere\":19,\"dvinci\":140,\"join\":2324,\"softgarden\":47,\"successfactors\":50}",
+   "gardees": 22
   },
   {
    "source": "ATS",
    "profil": "Joffrey",
-   "vues": 31478,
-   "retenues": 221,
+   "vues": 29551,
+   "retenues": 228,
    "duree_s": null,
    "etat": "ok",
-   "detail": "cache, 162 flux",
-   "gardees": 548
+   "detail": "cache, 164 flux",
+   "gardees": 556
   },
   {
    "source": "ATS dvinci",
    "profil": "Anne",
-   "vues": 147,
+   "vues": 140,
    "retenues": null,
    "duree_s": null,
-   "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (147 vues)",
+   "etat": "partielle",
+   "detail": "1 muets sur 32 : takko",
+   "muets": "1 muets sur 32 : takko",
    "gardees": 0
   },
   {
    "source": "ATS greenhouse",
    "profil": "Anne",
-   "vues": 72,
+   "vues": 73,
    "retenues": null,
    "duree_s": null,
    "etat": "ok",
-   "detail": "72 flux vivants",
+   "detail": "73 flux vivants",
    "gardees": 4
   },
   {
    "source": "ATS join",
    "profil": "Anne",
-   "vues": 2440,
+   "vues": 2324,
    "retenues": null,
    "duree_s": null,
    "etat": "ok",
-   "detail": "2440 flux vivants",
+   "detail": "2324 flux vivants",
    "gardees": 4
   },
   {
@@ -103,11 +109,11 @@
   {
    "source": "ATS recruitee",
    "profil": "Anne",
-   "vues": 31,
+   "vues": 32,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (31 vues)",
+   "detail": "0 offre gardee sur 5 scans (32 vues)",
    "gardees": 0
   },
   {
@@ -133,20 +139,20 @@
   {
    "source": "ATS successfactors",
    "profil": "Anne",
-   "vues": 59,
+   "vues": 50,
    "retenues": null,
    "duree_s": null,
    "etat": "partielle",
-   "detail": "1 muets sur 69 : Bayer",
-   "muets": "1 muets sur 69 : Bayer",
+   "detail": "9 muets sur 69 : Bayer, Knorr-Bremse, Koerber, Nordex, Orafol, RWE, Salzgitter, Schaeffler, ZF",
+   "muets": "9 muets sur 69 : Bayer, Knorr-Bremse, Koerber, Nordex, Orafol, RWE, Salzgitter, Schaeffler, ZF",
    "gardees": 3
   },
   {
    "source": "Arbeitsagentur",
    "profil": "Anne",
-   "vues": 679,
+   "vues": 680,
    "retenues": 361,
-   "duree_s": 56,
+   "duree_s": 53,
    "etat": "ok",
    "detail": "36 requete(s)",
    "gardees": 1
@@ -154,21 +160,21 @@
   {
    "source": "Arbeitsagentur",
    "profil": "Joffrey",
-   "vues": 286,
-   "retenues": 127,
-   "duree_s": 41,
+   "vues": 296,
+   "retenues": 133,
+   "duree_s": 37,
    "etat": "ok",
    "detail": "28 requete(s)",
-   "gardees": 148
+   "gardees": 155
   },
   {
    "source": "Business France (VIE)",
    "profil": "Anne",
-   "vues": 53,
+   "vues": 57,
    "retenues": 0,
-   "duree_s": 3,
+   "duree_s": 2,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (53 vues)",
+   "detail": "0 offre gardee sur 5 scans (57 vues)",
    "gardees": 0
   },
   {
@@ -184,26 +190,16 @@
   {
    "source": "Business France (veille)",
    "profil": "veille",
-   "vues": 53,
+   "vues": 57,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (53 vues)",
+   "detail": "0 offre gardee sur 5 scans (57 vues)",
    "gardees": 0
   },
   {
    "source": "CCFA Jobboerse",
    "profil": "Anne",
-   "vues": 10,
-   "retenues": 0,
-   "duree_s": 10,
-   "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (10 vues)",
-   "gardees": 0
-  },
-  {
-   "source": "CCFA Jobboerse",
-   "profil": "Joffrey",
    "vues": 10,
    "retenues": 0,
    "duree_s": 4,
@@ -212,11 +208,21 @@
    "gardees": 0
   },
   {
+   "source": "CCFA Jobboerse",
+   "profil": "Joffrey",
+   "vues": 10,
+   "retenues": 0,
+   "duree_s": 3,
+   "etat": "inutile",
+   "detail": "0 offre gardee sur 5 scans (10 vues)",
+   "gardees": 0
+  },
+  {
    "source": "Connexion-Emploi",
    "profil": "Anne",
    "vues": 300,
    "retenues": 0,
-   "duree_s": 99,
+   "duree_s": 53,
    "etat": "inutile",
    "detail": "0 offre gardee sur 5 scans (300 vues)",
    "gardees": 0
@@ -225,8 +231,8 @@
    "source": "Connexion-Emploi",
    "profil": "Joffrey",
    "vues": 300,
-   "retenues": 20,
-   "duree_s": 59,
+   "retenues": 21,
+   "duree_s": 53,
    "etat": "ok",
    "detail": "1 requete(s)",
    "gardees": 29
@@ -244,9 +250,9 @@
   {
    "source": "EURES",
    "profil": "Joffrey",
-   "vues": 793,
-   "retenues": 251,
-   "duree_s": 300,
+   "vues": 894,
+   "retenues": 252,
+   "duree_s": 118,
    "etat": "ok",
    "detail": "19 requete(s)",
    "gardees": 70
@@ -254,11 +260,11 @@
   {
    "source": "Engagement Jeunes",
    "profil": "Anne",
-   "vues": 55,
+   "vues": 58,
    "retenues": 0,
-   "duree_s": 80,
+   "duree_s": 51,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (55 vues)",
+   "detail": "0 offre gardee sur 5 scans (58 vues)",
    "gardees": 0
   },
   {
@@ -274,9 +280,9 @@
   {
    "source": "HeyJobs",
    "profil": "Anne",
-   "vues": 4686,
-   "retenues": 364,
-   "duree_s": 305,
+   "vues": 4720,
+   "retenues": 372,
+   "duree_s": 199,
    "etat": "ok",
    "detail": "76 requete(s)",
    "gardees": 1
@@ -284,12 +290,12 @@
   {
    "source": "HeyJobs",
    "profil": "Joffrey",
-   "vues": 5402,
-   "retenues": 275,
-   "duree_s": 273,
+   "vues": 5463,
+   "retenues": 273,
+   "duree_s": 240,
    "etat": "ok",
    "detail": "96 requete(s)",
-   "gardees": 347
+   "gardees": 353
   },
   {
    "source": "Indeed.de",
@@ -315,28 +321,28 @@
    "source": "LinkedIn",
    "profil": "Anne",
    "vues": 960,
-   "retenues": 315,
-   "duree_s": 994,
+   "retenues": 322,
+   "duree_s": 1122,
    "etat": "ok",
    "detail": "32 requete(s)",
-   "gardees": 48
+   "gardees": 50
   },
   {
    "source": "LinkedIn",
    "profil": "Joffrey",
    "vues": 960,
-   "retenues": 151,
-   "duree_s": 919,
+   "retenues": 146,
+   "duree_s": 1035,
    "etat": "ok",
    "detail": "32 requete(s)",
-   "gardees": 274
+   "gardees": 279
   },
   {
    "source": "LinkedIn V.I.E.",
    "profil": "Anne",
-   "vues": 16,
+   "vues": 21,
    "retenues": 1,
-   "duree_s": 3,
+   "duree_s": 1,
    "etat": "ok",
    "detail": "1 requete(s)",
    "gardees": 1
@@ -354,12 +360,12 @@
   {
    "source": "LinkedIn alertes Achats",
    "profil": "Anne",
-   "vues": 106,
-   "retenues": 32,
-   "duree_s": 4,
+   "vues": 103,
+   "retenues": 31,
+   "duree_s": 1,
    "etat": "ok",
    "detail": "1 requete(s)",
-   "gardees": 18
+   "gardees": 19
   },
   {
    "source": "LinkedIn alertes Achats",
@@ -374,41 +380,41 @@
   {
    "source": "Personio",
    "profil": "Anne",
-   "vues": 138,
+   "vues": 217,
    "retenues": 0,
    "duree_s": null,
    "etat": "ok",
-   "detail": "8 flux vivants",
+   "detail": "14 flux vivants",
    "gardees": 5
   },
   {
    "source": "Personio",
    "profil": "Joffrey",
-   "vues": 138,
-   "retenues": 5,
+   "vues": 217,
+   "retenues": 6,
    "duree_s": null,
    "etat": "ok",
-   "detail": "8 flux en cache",
-   "gardees": 104
+   "detail": "14 flux en cache",
+   "gardees": 106
   },
   {
    "source": "Site carriere Allianz",
    "profil": "Anne",
-   "vues": 235,
+   "vues": 236,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (235 vues)",
+   "detail": "0 offre gardee sur 5 scans (236 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere Alstom",
    "profil": "Anne",
-   "vues": 27,
+   "vues": 26,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (27 vues)",
+   "detail": "0 offre gardee sur 5 scans (26 vues)",
    "gardees": 0
   },
   {
@@ -424,11 +430,11 @@
   {
    "source": "Site carriere BNP Paribas",
    "profil": "Anne",
-   "vues": 110,
+   "vues": 109,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (110 vues)",
+   "detail": "0 offre gardee sur 5 scans (109 vues)",
    "gardees": 0
   },
   {
@@ -444,11 +450,11 @@
   {
    "source": "Site carriere Diehl",
    "profil": "Anne",
-   "vues": 499,
+   "vues": 497,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (499 vues)",
+   "detail": "0 offre gardee sur 5 scans (497 vues)",
    "gardees": 0
   },
   {
@@ -464,37 +470,37 @@
   {
    "source": "Site carriere Hensoldt",
    "profil": "Anne",
-   "vues": 444,
+   "vues": 450,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (444 vues)",
+   "detail": "0 offre gardee sur 5 scans (450 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere KNDS",
    "profil": "Anne",
-   "vues": 305,
+   "vues": 306,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (305 vues)",
+   "detail": "0 offre gardee sur 5 scans (306 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere Munich Re",
    "profil": "Anne",
-   "vues": 1430,
+   "vues": 1428,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (1430 vues)",
+   "detail": "0 offre gardee sur 5 scans (1428 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere Nordex",
    "profil": "Anne",
-   "vues": 156,
+   "vues": 155,
    "retenues": null,
    "duree_s": null,
    "etat": "ok",
@@ -504,11 +510,11 @@
   {
    "source": "Site carriere Rheinmetall",
    "profil": "Anne",
-   "vues": 1071,
+   "vues": 1077,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (1071 vues)",
+   "detail": "0 offre gardee sur 5 scans (1077 vues)",
    "gardees": 0
   },
   {
@@ -534,121 +540,121 @@
   {
    "source": "Site carriere Siemens",
    "profil": "Anne",
-   "vues": 384,
+   "vues": 382,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (384 vues)",
+   "detail": "0 offre gardee sur 5 scans (382 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere Siemens Energy",
    "profil": "Anne",
-   "vues": 273,
+   "vues": 267,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (273 vues)",
+   "detail": "0 offre gardee sur 5 scans (267 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere Societe Generale",
    "profil": "Anne",
-   "vues": 35,
+   "vues": null,
    "retenues": null,
    "duree_s": null,
-   "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (35 vues)",
+   "etat": "absente",
+   "detail": "vue pour la derniere fois au scan du 2026-11-24",
    "gardees": 0
   },
   {
    "source": "Site carriere TotalEnergies",
    "profil": "Anne",
-   "vues": 45,
+   "vues": 44,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (45 vues)",
+   "detail": "0 offre gardee sur 5 scans (44 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere Transdev",
    "profil": "Anne",
-   "vues": 136,
+   "vues": 141,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (136 vues)",
+   "detail": "0 offre gardee sur 5 scans (141 vues)",
    "gardees": 0
   },
   {
    "source": "Site carriere UniCredit",
    "profil": "Anne",
-   "vues": 120,
+   "vues": 121,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (120 vues)",
+   "detail": "0 offre gardee sur 5 scans (121 vues)",
    "gardees": 0
   },
   {
    "source": "StepStone",
    "profil": "Anne",
    "vues": 1900,
-   "retenues": 240,
-   "duree_s": 1267,
+   "retenues": 253,
+   "duree_s": 995,
    "etat": "ok",
    "detail": "76 requete(s)",
-   "gardees": 8
+   "gardees": 9
   },
   {
    "source": "StepStone",
    "profil": "Joffrey",
    "vues": 2301,
-   "retenues": 283,
-   "duree_s": 1538,
+   "retenues": 278,
+   "duree_s": 1152,
    "etat": "ok",
    "detail": "96 requete(s)",
-   "gardees": 415
+   "gardees": 419
   },
   {
    "source": "Welcome to the Jungle",
    "profil": "Anne",
-   "vues": 1097,
+   "vues": 1085,
    "retenues": 0,
-   "duree_s": 12,
+   "duree_s": 5,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (1097 vues)",
+   "detail": "0 offre gardee sur 5 scans (1085 vues)",
    "gardees": 0
   },
   {
    "source": "Welcome to the Jungle",
    "profil": "Joffrey",
-   "vues": 1097,
-   "retenues": 73,
+   "vues": 1085,
+   "retenues": 75,
    "duree_s": 5,
    "etat": "ok",
    "detail": "1 requete(s)",
-   "gardees": 83
+   "gardees": 85
   },
   {
    "source": "Workday Airbus",
    "profil": "Anne",
-   "vues": 465,
+   "vues": 463,
    "retenues": null,
    "duree_s": null,
    "etat": "ok",
-   "detail": "46 fiches lues",
-   "gardees": 8
+   "detail": "55 fiches lues",
+   "gardees": 7
   },
   {
    "source": "Workday MBDA",
    "profil": "Anne",
-   "vues": 163,
+   "vues": 162,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (163 vues)",
+   "detail": "0 offre gardee sur 5 scans (162 vues)",
    "gardees": 0
   },
   {
@@ -664,19 +670,19 @@
   {
    "source": "Workday Valeo",
    "profil": "Anne",
-   "vues": 44,
+   "vues": 47,
    "retenues": null,
    "duree_s": null,
    "etat": "inutile",
-   "detail": "0 offre gardee sur 5 scans (44 vues)",
+   "detail": "0 offre gardee sur 5 scans (47 vues)",
    "gardees": 0
   },
   {
    "source": "XING",
    "profil": "Anne",
    "vues": 1536,
-   "retenues": 349,
-   "duree_s": 845,
+   "retenues": 353,
+   "duree_s": 719,
    "etat": "ok",
    "detail": "76 requete(s)",
    "gardees": 10
@@ -684,32 +690,32 @@
   {
    "source": "XING",
    "profil": "Joffrey",
-   "vues": 1830,
-   "retenues": 269,
-   "duree_s": 1215,
+   "vues": 1844,
+   "retenues": 273,
+   "duree_s": 847,
    "etat": "ok",
    "detail": "96 requete(s)",
-   "gardees": 338
+   "gardees": 335
   },
   {
    "source": "englishjobs.de",
    "profil": "Anne",
-   "vues": 791,
+   "vues": 793,
    "retenues": 2,
-   "duree_s": 376,
+   "duree_s": 244,
    "etat": "ok",
    "detail": "4 requete(s)",
-   "gardees": 26
+   "gardees": 28
   },
   {
    "source": "englishjobs.de",
    "profil": "Joffrey",
-   "vues": 791,
-   "retenues": 5,
-   "duree_s": 209,
+   "vues": 793,
+   "retenues": 4,
+   "duree_s": 179,
    "etat": "ok",
    "detail": "4 requete(s)",
-   "gardees": 64
+   "gardees": 63
   }
  ]
 }
