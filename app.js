@@ -550,11 +550,13 @@ function prioriteTri(o) {
   if (o.primeDoublon) u += o.primeDoublon;
   if (o.corpsNonLu) u -= 6;
   // 09/11 (audit) : pour Anne, le V.I.E. d abord (regle du 04/11), puis la correspondance sur 5, puis un V.I.E. possible. L ancien malus
-  // touchait les CDI ou un V.I.E. est possible : 40 CDI sans V.I.E. passaient devant. Rien n est masque. Joffrey cherche un CDI : score seul.
+  // touchait les CDI ou un V.I.E. est possible : 40 CDI sans V.I.E. passaient devant. Rien n est masque.
   if (o.qui === 'Anne') {
     if (o.contratType === 'VIE') u += 1000;
     u += (o.fit || 0) * 100;
     if (o.vie && (o.vie.v === 'oui' || o.vie.v === 'probable')) u += 30;
+  } else if (o.qui === 'Joffrey') {
+    u += GROUPES_JOFFREY[o.groupe] ? GROUPES_JOFFREY[o.groupe].rang : 0;   // 26/11 : ses trois groupes d abord, puis le score
   }
   return (o.score || 0) + u;
 }
@@ -566,6 +568,32 @@ function fileTri() {
     if (pa !== pb) return pa - pb;
     return prioriteTri(b) - prioriteTri(a);
   });
+}
+
+// ------------------------------------------------------------------ Joffrey
+// 26/11 (ses consignes des 25 et 26/11, VIE\JOFFREY\CONSIGNES_JOFFREY_2026-11-25_26.md) : build_data.py (champs_joffrey) pose sur
+// ses cartes le groupe, la mission, le salaire brut publie (fixe, variable, estimation externe a part) et le net estime.
+var GROUPES_JOFFREY = {
+  prioritaire: { lib: 'prioritaire', cls: 'ok', rang: 200 },
+  ambitieuse: { lib: 'ambitieuse mais defendable', cls: 'signal', rang: 100 },
+  'a confirmer': { lib: 'a confirmer', cls: 'relance', rang: 0 },
+  freelance: { lib: 'freelance, a part', cls: 'c-interim', rang: -300 },   // jamais presente comme salarie, classe apres le reste
+};
+function blocJoffrey(o, tri) {
+  if (o.qui !== 'Joffrey' || !o.groupe) return '';
+  var g = GROUPES_JOFFREY[o.groupe] || { lib: o.groupe };
+  var ligne = function (titre, txt) { return txt ? '<div><b>' + esc(titre) + ' :</b> ' + txt + '</div>' : ''; };
+  var contrat = [o.contratType || 'CDI', o.mission ? 'mission ' + o.mission : '', o.debut ? 'debut ' + o.debut : '']
+    .filter(Boolean).map(esc).join(' &middot; ');
+  var brut = [o.brutFixe ? 'fixe ' + o.brutFixe : '', o.brutVariable ? 'variable : ' + o.brutVariable : ''].filter(Boolean).map(esc).join(' ; ');
+  var html = ligne('Groupe', esc(g.lib) + (o.groupeD ? ', ' + esc(o.groupeD) : ''))
+    + ligne('Contrat', contrat)
+    + ligne('Suite possible', o.suite ? '&laquo; ' + esc(o.suite) + ' &raquo;' : '')
+    + ligne('Salaire brut publie', brut || 'non publie')
+    + ligne('Net estime', o.netMois ? esc(o.netMois) + ' <span style="opacity:.75">(' + esc(o.netHyp || '') + ')</span>' : '')
+    + ligne('Estimation externe', o.brutEstime ? esc(o.brutEstime) : '');
+  if (tri) return '<div class="tri-bloc"><h4>Pour Joffrey</h4>' + html + '</div>';
+  return '<div class="moteur" style="font-size:12.5px;line-height:1.55;margin:8px 0;padding:8px 10px;border-radius:8px;background:rgba(127,127,127,.10)">' + html + '</div>';
 }
 
 // ------------------------------------------------------------------ chips
@@ -581,6 +609,10 @@ function chipsDe(o, complet) {
   } else {
     c += '<span class="chip contrat c-' + esc(ct.toLowerCase()) + '">' + esc(ct) + '</span>';
   }
+  if (o.qui === 'Joffrey' && GROUPES_JOFFREY[o.groupe]) {
+    c += '<span class="chip ' + GROUPES_JOFFREY[o.groupe].cls + '" title="' + esc(o.groupeD || '') + '">' + esc(GROUPES_JOFFREY[o.groupe].lib) + '</span>';
+  }
+  if (o.qui === 'Joffrey' && o.mission) c += '<span class="chip" title="' + esc(o.suite || '') + '">mission ' + esc(o.mission) + '</span>';
   if (o.hub) c += '<span class="chip hub">' + esc(o.hub) + '</span>';
   if (o.fit != null) c += '<span class="chip ' + (o.fit >= 4 ? 'ok' : (o.fit === 3 ? 'relance' : '')) + '" title="' + esc(o.fitD || '') + '">' + o.fit + '/5</span>';
   if (o.chaud) c += '<span class="chip signal" title="La personne que tu connais dans l entreprise">' + esc(o.chaud) + '</span>';
@@ -594,6 +626,7 @@ function chipsDe(o, complet) {
   else if (o.etatLien === 'incertain') c += '<span class="chip relance" title="' + esc(o.motifLien || '') + '">a verifier</span>';
   else if (o.etatLien === 'vivante') c += '<span class="chip ok" title="verifie le ' + esc(o.verifieLe || '') + '">en ligne</span>';
   if (o.langue === 'de' || o.langue === 'de-mais-en') c += '<span class="chip de">annonce en allemand</span>';
+  else if (o.langue === 'de-a-confirmer') c += '<span class="chip de" title="Niveau demande au-dessus de B2, ou place de l allemand ambigue : a confirmer avant de postuler.">allemand a confirmer</span>';
   if (o.disparue) c += '<span class="chip">annonce retiree</span>';
   if (o.manuel) c += '<span class="chip ok" title="Piste entree a la main, hors scanner">ajoutee a la main</span>';
   if (o.adjacent) c += '<span class="chip relance" title="Titre hors achats purs : supply chain, contrats, projet, qualite, methodes, produit.">achats elargi</span>';
@@ -602,7 +635,8 @@ function chipsDe(o, complet) {
   else if (o.republiee > 1) c += '<span class="chip signal" title="Relancee faute de candidats, ou plusieurs postes.">republiee ' + o.republiee + ' fois</span>';
   if (o.sources && o.sources.length) c += '<span class="chip" title="' + esc(o.sources.join(', ')) + '">' + esc(o.sources[0]) + (o.sources.length > 1 ? ' +' + (o.sources.length - 1) : '') + '</span>';
   else if (o.source) c += '<span class="chip">' + esc(o.source) + '</span>';
-  if (o.remuneration) c += '<span class="chip mono">' + esc(o.remuneration) + '</span>';
+  if (o.qui === 'Joffrey' && o.brutFixe) c += '<span class="chip mono" title="' + esc(o.netMois ? o.netMois + ' (' + (o.netHyp || '') + ')' : '') + '">' + esc(o.brutFixe) + '</span>';
+  else if (o.remuneration) c += '<span class="chip mono">' + esc(o.remuneration) + '</span>';
   if (!o.disparue) {
     // 09/11 (audit) : la correspondance sur 5 d Anne decide, le score seul disait « tres pertinent » pour un 0 sur 5.
     var s = o.score || 0, niv = o.fit != null ? (o.fit >= 4 ? 'fort' : (o.fit === 3 ? 'bon' : 'ok')) : (s >= 105 ? 'fort' : (s >= 85 ? 'bon' : 'ok'));
@@ -646,7 +680,7 @@ function carte(o, sansPick) {
       + '<div class="rangee"><label>Etape</label><select class="f-statut" data-id="' + esc(o.id) + '">' + opts + '</select>'
       + '<label style="margin-left:6px">Pour</label><select class="f-qui" data-id="' + esc(o.id) + '">' + quiOpts + '</select></div>'
       + (o.qui === 'Anne' ? '<div class="ensuite"><b>Et ensuite :</b> ' + (ET_ENSUITE[o.statut] || ET_ENSUITE['A traiter']) + '</div>' : '')
-      + exig
+      + exig + blocJoffrey(o)
       + (o.vie ? '<div class="moteur" style="font-size:12.5px;line-height:1.55;margin:8px 0;padding:8px 10px;border-radius:8px;background:rgba(127,127,127,.10)">'
         + '<div><b>V.I.E. :</b> ' + esc(o.vie.r) + '</div>'
         + '<div><b>' + o.fit + '/5 :</b> ' + esc(o.fitD || '') + '</div>'
@@ -880,7 +914,7 @@ function rendreTrier() {
     + '<h2>' + esc(o.poste) + '</h2><div class="tri-lieu">' + esc(o.ville || '')
     + (dateLisible(o.date) ? ' &middot; publiee le ' + dateLisible(o.date) : '')
     + (o.sources && o.sources.length ? ' &middot; ' + esc(o.sources.join(', ')) : '') + '</div></div></div>'
-    + '<div class="chips">' + chipsDe(o) + '</div>' + exig
+    + '<div class="chips">' + chipsDe(o) + '</div>' + exig + blocJoffrey(o, true)
     + (o.extrait ? '<div class="tri-bloc"><h4>L annonce, au debut</h4><p class="extrait">' + esc(o.extrait) + '</p></div>' : '')
     + '<div class="tri-motif" id="tri-motif" hidden><label for="tri-note">Pourquoi tu l ecartes, en une ligne. Le motif reste dans la note de l offre.</label>'
     + '<input type="text" id="tri-note" placeholder="allemand C1 exige, 5 ans demandes, diplome ingenieur, poste hors bassin..." autocomplete="off">'
